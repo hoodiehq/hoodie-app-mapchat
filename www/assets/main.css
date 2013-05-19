@@ -1,0 +1,600 @@
+* { 
+  -moz-box-sizing: border-box; 
+  -webkit-box-sizing: 
+  border-box; box-sizing: border-box; 
+  
+  /* This gets rid of the ugly orange android focus rects*/
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+
+.hidden{
+  display: none;
+}
+
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.right{
+  float:right;
+}
+
+body{
+  background: #DCDCDC;
+}
+
+a{
+  color: #555;
+}
+
+a:hover{
+  color: #333;
+}
+
+/* ==========================================================================
+   Hoodie Sign In / Sign Up / Sign out stylings
+   ========================================================================== */
+
+/* hide contents until we know if user is signed in or not */
+body .hoodie-account-signedin,
+body .hoodie-account-signedout,
+body .hoodie-account-error {
+  display: none;
+}
+
+html[data-hoodie-account-status=signedin]  .hoodie-account-signedin,
+html[data-hoodie-account-status=error]     .hoodie-account-error,
+html[data-hoodie-account-status=signedout] .hoodie-account-signedout {
+  display: block;
+}
+
+.hoodie-accountbar {
+  position: fixed;
+  top: 20px;
+  right: 10px;
+  z-index: 100;
+  white-space: nowrap;;
+}
+
+
+
+.hoodie-accountbar .hoodie-username {
+  font-weight: bold;
+}
+.hoodie-accountbar > div {
+  float: left;
+  margin-left: 10px;
+}
+.hoodie-accountbar .btn-group {
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+}
+
+@media (max-width: 480px)
+{
+  .modal {
+    position: fixed;
+    top: 3%;
+    right: 3%;
+    left: 3%;
+    width: auto;
+    margin: 0;
+  }
+  .modal.fade.in {
+    top: 2%;
+    width: 94%;
+    margin-left: 0;
+  }
+  .modal-body {
+    max-height: 350px;
+    padding: 15px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+   }
+}
+
+/*
+
+------------------ SETUP
+
+ */
+
+.configContainer {
+  background: #EEE;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 110;
+}
+
+.configContainer .content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  padding: 10px;
+  overflow: auto;
+}
+
+.configContainer.signIn .content {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px;
+  overflow: auto;
+}
+
+.configContainer h1,
+.configContainer h2{
+  text-align: center;
+}
+.configContainer h2 {
+  font-size: 24px
+}
+
+.configContainer img{
+  margin: 1em auto;
+  display: block;
+}
+
+.configContainer form,
+.configContainer .alert{
+  margin: 0 auto;
+  max-width: 30em;
+}
+
+.configContainer input[type="text"],
+.configContainer input[type="password"]{
+  border-radius: 6px;
+  margin: .75em 0 .5em;
+  padding: 18px 10px;
+  font-size: 16px;
+  line-height: 16px;
+  height: 52px;
+}
+
+.setup .setupButtonBar {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 50px;
+  background: #333;
+}
+
+.setup button.bottomLeft{
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+}
+
+.setup button.bottomRight{
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+}
+
+.setup .progress{
+  background: none;
+  -webkit-box-shadow:none;
+  -moz-box-shadow:none;
+  box-shadow:none;
+}
+
+.setup .downloadStatus{
+  padding: 1em;
+  border-radius: 5px;
+  margin: 1em auto;
+  font-weight: 800;
+}
+
+@-webkit-keyframes rotating {
+    from{
+        -webkit-transform: rotate(0deg);
+    }
+    to{
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+
+.setup i.icon-refresh{
+  margin-right: 10px;
+}
+
+.mainContainer i{
+  margin-right: 8px;
+}
+
+.setup .downloadStatus.alert-success > i.icon-refresh,
+.setup .btn.replicateData:not(.loading) > i.icon-refresh,
+.geolocation i.icon-refresh,
+.geolocation.loading i.icon-screenshot{
+  display: none;
+}
+
+.geolocation.loading i.icon-refresh{
+  display: inline-block;
+}
+
+.setup .downloadStatus:not(.alert-success) > i.icon-refresh,
+.setup .btn.replicateData.loading > i.icon-refresh,
+.geolocation.loading i.icon-refresh {
+  -webkit-animation: rotating 1.3s linear infinite;
+}
+
+div.signIn button.signIn{
+  margin-top: 10px;
+}
+
+div.signIn .alert{
+  padding: 16px 35px 16px 14px;
+  margin-bottom: 10px;
+}
+
+
+/*
+padding: 9px 14px;
+font-size: 16px;
+
+ */
+
+------------------ LEAFLET
+
+ */
+
+.leaflet-control-zoom a {
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  font-size: 36px;
+}
+
+.leaflet-container a.leaflet-active {
+  outline: none;
+}
+
+.leaflet-touch .leaflet-control-zoom a {
+  width: 36px;
+  height: 36px;
+  padding: 3px;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  width: 27px;
+  height: 27px;
+}
+
+.leaflet-popup-scrolled {
+  border: none;
+}
+
+.leaflet-marker-icon:after{
+  content: "2";
+  display: block;
+  width: 10px;
+  height: 10px;
+  background:red;
+}
+
+.leaflet-label.show{
+  display: block;
+}
+
+.leaflet-label,
+.contentContainer .markerListItem a.markerLocation:after{
+  background: rgb(255, 255, 255);
+  background-clip: padding-box;
+  border: none;
+  -webkit-border-radius: 50%;
+     -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+          border-radius: 50%;
+  color: #111;
+  display: none;
+  font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding: 0;
+  position: absolute;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 6;
+  text-align: center;
+  width: 19px;
+  height: 19px;
+}
+
+/*
+
+------------------ MAP
+
+ */
+
+#map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+.layer-select {
+  position: absolute;
+  z-index: 1;
+  top: 80px;
+  left: 10px;
+}
+
+#map .btn-danger {
+  color: #FFF;
+}
+
+.modal {
+  width: 250px;
+  margin-left: -125px;
+}
+
+/*
+
+------------------ CONTAINER
+
+*/
+
+.mainContainer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  max-height: 66%;
+  background: #DCDCDC;
+  -webkit-box-shadow: 0 -1px 3px 0px rgba(0,0,0,.5);
+  -moz-box-shadow: 0 -1px 3px 0px rgba(0,0,0,.5);
+  box-shadow: 0 -1px 3px 0px rgba(0,0,0,.5);
+}
+
+.mainContainer.map{
+  height: 50px;
+}
+
+.mainContainer.preview{
+  height: auto;
+}
+
+.mainContainer.list, .mainContainer.detail{
+  height: auto;
+  max-height: 66%;
+}
+
+.mainContainer .tabBar.btnGroup{
+  margin: 6px 0 0 4px;
+}
+
+.mainContainer .tabBar .btn{
+
+}
+
+.mainContainer .tabBar button.map{
+  margin-right: 3px;
+}
+
+.mainContainer.list .tabBar .disabled-list{
+  display: block;
+  float: left;
+}
+
+.mainContainer .tabBar button.disabled-list,
+.mainContainer.map .tabBar button.map,
+.mainContainer.list .tabBar button.list,
+.mainContainer.list .tabBar button.list{
+  display: none;
+}
+
+.mainContainer.list .contentContainer, .mainContainer.detail .contentContainer{
+  overflow-y: scroll;
+  position: relative;
+  /* FIX: this is tailored to the Galaxy Note */
+  /*height: 308px;*/
+}
+
+.contentContainer{
+  margin: 5px 5px;
+}
+
+.contentContainer ul{
+  margin: 6px 0 0 0;
+}
+
+.contentContainer .addMarker,
+.contentContainer .markerDetails{
+  margin-bottom: 10px;
+}
+
+.contentContainer .emptyMarkerList{
+  text-shadow: 0px 1px 1px #FFF;
+  color: #ACACAC;
+  text-align: center;
+  padding-bottom: 1em;
+}
+
+.contentContainer .emptyMarkerList h1{
+  font-size: 1.25rem;
+  margin-top: 0;
+}
+
+.contentContainer li.markerListItem{
+  list-style: none;
+  min-height: 75px;
+  background: #F3F3F3;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.contentContainer .infoContainer{
+  margin-top: 3px;
+  background: #F3F3F3;
+  padding: 10px 12px 14px;
+  border-radius: 4px;
+}
+
+.contentContainer .infoContainer form{
+  margin: 5px 0;
+}
+
+.contentContainer .infoContainer p{
+  margin: 0;
+}
+
+.contentContainer .name{
+  font-weight: 800;
+  font-size: 1.5rem;
+  display: block;
+  line-height: 1.25em;
+  margin-bottom: 2px;
+}
+
+.contentContainer .addFeatureMarker .infoContainer{
+  margin-bottom: 6px;
+}
+
+.contentContainer .markerListItem a:hover{
+  text-decoration: none;
+}
+
+.contentContainer .markerListItem a.markerInfo{
+  display: block;
+  float: left;
+  width: 78%;
+  margin-left: 3px;
+}
+
+.contentContainer .markerListItem a.markerLocation{
+  display: block;
+  position: relative;
+  float:right;
+  margin-right: 3px;
+  margin-top: 3px;
+  background: #DCDCDC url('../assets/marker-icon.png') no-repeat center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 0 0 3px #AAA inset;
+}
+
+.contentContainer .markerListItem a.markerLocation[data-messages="0"]:after{
+  display: none;
+}
+
+.contentContainer .markerListItem a.markerLocation:after {
+  content: attr(data-messages);
+  display: block;
+  margin: 9px 0 0 16px;
+}
+
+.contentContainer li.markerListItem.active,
+.mainContainer.preview .contentContainer li.markerListItem{
+  background: #FFFFFF;
+}
+
+li.markerListItem.active a{
+  color: #333;
+}
+
+.contentContainer .markerListItem.active a.markerLocation,
+.mainContainer.preview li.markerListItem a.markerLocation{
+  background: #DCDCDC url('../assets/active-marker-icon.png') no-repeat center;
+}
+
+.contentContainer .messagesContainer ul{
+  margin: 10px 0;
+}
+
+.contentContainer .messagesContainer li{
+  background: #F3F3F3;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+
+.contentContainer li p:last-of-type{
+  margin-bottom: 0;
+}
+
+.contentContainer .messagesContainer .metaData{
+  font-weight: 800;
+}
+
+.contentContainer input[type='text']{
+  width: 100%;
+  height: 2em;
+  font-size: 1rem;
+}
+
+.contentContainer textarea{
+  width: 100%;
+  font-size: 1rem;
+  height: 5em;
+}
+
+.contentContainer select{
+  margin: 8px 0;
+}
+
+@media only screen and (max-width: 420px) {
+  .mainContainer.preview .contentContainer .ownerPrefix{
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1279px) {
+  body.list .hoodie-accountbar, body.list .leaflet-control-container,
+  body.detail .hoodie-accountbar, body.detail .leaflet-control-container{
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+  .mainContainer{
+    width:25%;
+    position: absolute;
+    left:0;
+    top:0;
+    height: 100%;
+    max-height: 100%;
+  }
+  .mainContainer.list,
+  .mainContainer.detail{
+    height: 100%;
+    max-height: 100%;
+  }
+  #map{
+    width: 75%;
+    left:25%;
+    position: absolute;
+  }
+  .tabBar .map{
+    display: none;
+  }
+  .btn.addMessage,
+  .btn.confirmMarker,
+  .btn.confirmFeatureMarker,
+  .btn.removeFeatureMarker{
+    margin-bottom: 10px;
+  }
+  .markerDetails .btn,
+  .addMarker .btn{
+    width: 100%;
+  }
+  .contentContainer .emptyMarkerList{
+    /*font-size: 1.5rem;*/
+  }
+  .contentContainer .addFeatureMarker .infoContainer{
+    margin-bottom: 10px;
+  }
+}

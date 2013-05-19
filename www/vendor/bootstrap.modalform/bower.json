@@ -1,0 +1,17 @@
+{
+  "name": "bootstrap.modalform",
+  "version": "1.0.0",
+  "main": "bootstrap.modalform.js",
+  "ignore": [
+    "**/.*"
+  ],
+  "gitHead": "07109c50df5ca5e95c89a9a717c1a94d33ca6b37",
+  "readme": "bootstrap modal forms\n=======================\n\nExample usage:\n\n```javascript\n$.modalForm({\n  fields: [ 'username', 'password' ],\n  submit: 'Sign In'\n}).on('submit', function(event, inputs) {\n  // event.target => <div class=\"modal\">\n  // inputs       => { username, password }\n})\n```\n\nresults in:\n\n![Screenshot](https://raw.github.com/gr2m/bootstrap.modalform.js/master/assets/screenshot.png)\n\nLicense\n---------\n\nMIT license.  \n© Gregor Martynus",
+  "readmeFilename": "README.md",
+  "_id": "bootstrap.modalform@1.0.0",
+  "description": "bootstrap modal forms =======================",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gr2m/bootstrap.modalform.js.git"
+  }
+}

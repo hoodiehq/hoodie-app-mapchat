@@ -1,0 +1,9 @@
+{
+  "name": "leaflet.label",
+  "version": "0.0.0",
+  "commit": "8aa7ece2f9879c9b9058e3948429dcfe35807e7d",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Leaflet/Leaflet.label.git"
+  }
+}

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html class="no-js" data-hoodie-account-status="loading">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Hoodie MapChat</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <link rel="stylesheet" href="vendor/bootstrap/docs/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="vendor/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="assets/main.css">
+  </head>
+  <body class="map">
+
+    <div class="configContainer signIn hidden">
+      <div class="signInContainer">
+        <div class="content">
+          <h1>Hoodie MapChat</h1>
+          <div class="alert alert-warn hidden"></div>
+          <form>
+            <input type="text" name="username" class="username input-block-level" placeholder="Username">
+            <input type="password" name="password" class="password input-block-level" placeholder="Password">
+            <button class="signIn btn btn-large">Sign in</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="mainContainer map hidden">
+      <div class="tabBar btnGroup group">
+        <button class="list btn btn-large"><i class="icon-th-list icon-black"></i>Marker list</button>
+        <button class="disabled-list btn btn-large" disabled="disabled"><i class="icon-th-list icon-black" ></i>Marker list</button>
+        <button class="map btn btn-large right"><i class="icon-chevron-down icon-black"></i> Close</button>
+      </div>
+      <div class="contentContainer">
+
+      </div>
+    </div>
+
+    <div class="hoodie-accountbar">
+      <div class="geolocation">
+        <button class="geolocate btn btn-medium btn-inverse" data-toggle="dropdown">
+          <i class="icon-screenshot icon-white"></i>
+          <i class="icon-refresh icon-white"></i>
+        </button>
+      </div>
+
+      <div class="user">
+        <span class="btn-group">
+          <button class="btn btn-medium dropdown-toggle btn-inverse" data-toggle="dropdown">
+              <i class="icon-user icon-white"></i>
+          </button>
+          <ul class="dropdown-menu pull-right nav">
+            <li class="nav-header">
+              <span class="hoodie-username">...<!-- usern name will be filled in here --></span>
+            </li>
+
+            <li>
+              <a href="#" data-hoodie-action="signout">
+                <i class="icon-off"></i>
+                Sign out
+              </a>
+            </li>
+
+            <li class="divider" style="height: 2px;"></li>
+            <li class="nav-header">
+              <span>Bookmarks</span>
+            </li>
+            <li>
+              <a tabindex="-1" href="#" class="bookmark" data-lat="52.500274" data-lng="13.419693" data-zoom="16">
+                <i class="icon-map-marker"></i>
+                Berlin
+              </a>
+            </li>
+            <li>
+              <a tabindex="-1" href="#" class="bookmark" data-lat="47.369234" data-lng="8.539252" data-zoom="14">
+                <i class="icon-map-marker"></i>
+                Zurich
+              </a>
+            </li>
+            <li>
+              <a tabindex="-1" href="#" class="bookmark" data-lat="52.95474" data-lng="-1.158972" data-zoom="14">
+                <i class="icon-map-marker"></i>
+                Nottingham
+              </a>
+            </li>
+          </ul>
+        </span>
+      </div><!-- /.user -->
+
+      <div class="hoodie-account-signedout hoodie-account-error hidden">
+        <span class="btn-group">
+          <button class="btn btn-medium dropdown-toggle btn-danger" data-toggle="dropdown">
+            <i class="icon-exclamation-sign icon-white"></i>
+          </button>
+          <ul class="dropdown-menu pull-right nav">
+            <li class="nav-header">
+              Your session ran out<br>
+              or was stopped.
+            </li>
+            <li class="divider" style="height: 2px;"></li>
+            <li>
+              <a href="#" data-hoodie-action="signin">
+                <i class="icon-user"></i> Sign in again
+              </a>
+            </li>
+          </ul>
+        </span>
+      </div><!-- /.hoodie-account-error -->
+    </div><!--/hoodieAccountBar -->
+
+    <script id="preview" type="text/html">
+      <ul>
+        {{>markerListItem}}
+      </ul>
+    </script>
+
+    <script id="markerListItem" class="partial" type="text/html">
+      <li class="markerListItem group {{#active}} active{{/active}}" data-id="{{id}}" data-lat="{{lat}}" data-lng="{{lng}}">
+        <a href="#" class="markerInfo">
+          <span class="name">{{name}}</span>
+          <span class="owner">{{createdByName}}</span> | <span class="date">{{createdAtReadable}}</span>
+        </a>
+        <a href="#" class="markerLocation" data-messages="{{options.messages}}">
+        </a>
+      </li>
+    </script>
+
+    <script id="addMarker" type="text/html">
+      <div class="addMarker" data-id="{{id}}" data-lat="{{lat}}" data-lng="{{lng}}">
+        <h3>New marker</h3>
+        <form class="marker">
+          <fieldset>
+            <input type="text" placeholder="Name" name="name"></input>
+            <span class="owner">{{createdByName}}</span> | <span class="date">{{createdAtReadable}}</span>
+          </fieldset>
+        </form>
+        <a href="#" class="confirmMarker btn btn-large btn-success"><i class="icon-ok icon-white"></i>Add marker</a>
+        <a href="#" class="removeMarker btn btn-large btn-warning"><i class="icon-trash icon-white"></i>Cancel</a>
+      </div>
+    </script>
+
+    <script id="markerDetails" type="text/html">
+      <div class="markerDetails" data-id="{{id}}" data-lat="{{lat}}" data-lng="{{lng}}">
+        <div class="infoContainer">
+          <span class="name">{{name}}</span>
+          <p><span class="owner">{{createdByName}}</span> | <span class="date">{{createdAtReadable}}</span></p>
+          {{# feature}}
+            <p>{{feature.properties.Landwirt}}</p>
+            <p>{{feature.properties.Flaeche}}ha {{feature.properties.Kultur}} - {{feature.properties.Menge}}</p>
+          {{/ feature}}
+          {{#showDeleteButton}}
+          <a href="#" class="removeMarker btn btn-large btn-danger"><i class="icon-trash icon-white"></i>Delete marker</a>
+          {{/showDeleteButton}}
+        </div>
+        <div class="messagesContainer">
+          <h4 class="hidden">Messages</h4>
+        </div>
+        <div class="addMessageSection">
+          <h4>New message</h4>
+          <textarea name="messageBody"></textarea>
+          <a href="#" class="addMessage btn btn-large btn-success"><i class="icon-ok icon-white"></i>Send message</a>
+          <a href="#" class="cancelMessage btn btn-large btn-warning"><i class="icon-trash icon-white"></i>Cancel</a>
+        </div>
+      </div>
+    </script>
+
+    <script id="message" type="text/html">
+      <li>
+        <p class="metaData"><span class="owner">#{{index}} - {{createdByName}}</span> - <span class="date">{{createdAtReadable}}</span></p>
+        <p class="messageBody">{{messageBody}}</p>
+      </li>
+    </script>
+
+    <script id="markerList" type="text/html">
+    {{#data}}
+      <ul class="markerList">
+    {{#markers}}
+      {{>markerListItem}}
+    {{/markers}}
+      </ul>
+    {{/data}}
+    {{^data}}
+      <div class="emptyMarkerList">
+        <h1>No markers</h1>
+        <span>Click and hold on the map<br>to add a marker</span>
+      </div>
+    {{/data}}
+    </script>
+
+    <!-- vendor -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/docs/assets/js/bootstrap.min.js"></script>
+    <script src="vendor/bootstrap.modalform/bootstrap.modalform.js"></script>
+    <script src="vendor/leaflet/dist/leaflet.js"></script>
+    <script src="vendor/leaflet.label/dist/leaflet.label.js"></script>
+    <script src="vendor/hoodie/hoodie.min.js"></script>
+    <script src="vendor/underscore/underscore-min.js"></script>
+    <script src="vendor/jquery.scrollTo.min.js"></script>
+    <script src="vendor/jquery.hammer.min.js"></script>
+    <script src="vendor/hoodie.accountbar.bootstrap.js"></script>
+    <script src="vendor/ICanHaz.min.js"></script>
+    <script src="vendor/fastclick.js"></script>
+    <script src="vendor/date-utils.min.js"></script>
+
+    <!-- MapChat -->
+    <script src="assets/main.js"></script>
+  </body>
+</html>
