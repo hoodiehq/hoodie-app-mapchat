@@ -55,6 +55,8 @@ Hoodie.extend('hoodstrap', (function() {
 
     // bind to click events
     $('body').on('click.hoodie.data-api', '[data-hoodie-action]', function(event) {
+      event.preventDefault()
+      
       var $element = $(event.target),
           action   = $element.data('hoodie-action'),
           $form;
@@ -98,8 +100,9 @@ Hoodie.extend('hoodstrap', (function() {
           break
         case 'signout':
           if(hoodie.store.isDirty()){
-            alert("Ausloggen zur Zeit nicht möglich, weil keine Internetverbindung besteht und Datenverlust droht.")
-            return;
+            if (! confirm("There are local changes that have not been synced yet. These wil get lost if you sign out. Still want to sign out?")) {
+              return;
+            }
           }
           window.hoodie.account.signOut().done(function(){
             window.location.reload();

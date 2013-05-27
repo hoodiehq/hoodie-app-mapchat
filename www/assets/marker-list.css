@@ -1,0 +1,177 @@
+#markerList {
+  position: absolute;
+  left:0;
+  top:0;
+  bottom: 0;
+  width: 280px;
+
+  background: #202020 url(noise.png);
+  overflow-x: hidden;
+
+  transition: left .2s linear;
+}
+#markerList:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 20px;
+  left: 100%;
+  width: 10px;
+
+  -webkit-box-shadow: 0 -2px 3px 2px rgba(0,0,0,.7);
+  -moz-box-shadow: 0 -2px 3px 2px rgba(0,0,0,.7);
+  box-shadow: 0 -2px 3px 2px rgba(0,0,0,.7);
+}
+
+#markerList.hide {
+  display: block;
+  left: -320px;
+}
+
+#markerList header {
+  margin: 10px;
+}
+#markerList header input[type=search] {
+  width: 240px;
+  -moz-box-sizing: border-box; 
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; 
+  height: 30px;
+}
+
+
+#markerList .content {
+  color: #EEE;
+}
+
+#markerList .content ul{
+  margin: 6px 0 0 0;
+}
+
+#markerList .content .emptyMarkerList {
+  text-shadow: 0px 1px 1px #FFF;
+  text-align: center;
+  padding-bottom: 1em;
+}
+
+#markerList .content .emptyMarkerList h1 {
+  font-size: 1.25rem;
+  margin-top: 0;
+}
+
+#markerList .content li {
+  list-style: none;
+  min-height: 75px;
+  background: rgba(255,255,255,.1);
+  padding: 10px;
+  margin: 0 0 1px;
+}
+#markerList .content li a {
+  color: inherit;
+}
+#markerList .content li:hover {
+  background: rgba(255,255,255,.2);
+  cursor: pointer;
+}
+
+#markerList .content .infoContainer{
+  margin-top: 3px;
+  background: #F3F3F3;
+  padding: 10px 12px 14px;
+  border-radius: 4px;
+}
+
+#markerList .content .infoContainer form{
+  margin: 5px 0;
+}
+
+#markerList .content .infoContainer p{
+  margin: 0;
+}
+
+#markerList .content .name{
+  font-weight: 800;
+  font-size: 1.5rem;
+  display: block;
+  line-height: 1.25em;
+  margin-bottom: 2px;
+}
+
+#markerList .content .addFeatureMarker .infoContainer{
+  margin-bottom: 6px;
+}
+
+#markerList .content a:hover{
+  text-decoration: none;
+}
+
+#markerList .content a.markerInfo{
+  display: block;
+  float: left;
+  width: 78%;
+  margin-left: 3px;
+}
+
+#markerList .content a.markerLocation{
+  display: block;
+  position: relative;
+  float:right;
+  margin-right: 3px;
+  margin-top: 3px;
+  background: #DCDCDC url('../assets/marker-icon.png') no-repeat center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  box-shadow: 0 0 3px #AAA inset;
+}
+
+#markerList .content a.markerLocation[data-messages="0"]:after{
+  display: none;
+}
+
+#markerList .content a.markerLocation:after {
+  content: attr(data-messages);
+  display: block;
+  margin: 9px 0 0 16px;
+}
+
+#markerList .content li.active {
+  background: #FFFFFF;
+}
+
+#markerList .content li.active a {
+  color: #333;
+}
+
+#markerList .content.active a.markerLocation {
+  background: #DCDCDC url('../assets/active-marker-icon.png') no-repeat center;
+}
+
+#markerList .content .messagesContainer ul{
+  margin: 10px 0;
+}
+
+#markerList .content .messagesContainer li{
+  background: #F3F3F3;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+}
+
+#markerList .content li p:last-of-type{
+  margin-bottom: 0;
+}
+
+/* toggle map */
+.mapContainer {
+  transition: left .2s linear;
+}
+#markerList ~ .mapContainer {
+  left: 280px;
+}
+#markerList.hide ~ .mapContainer {
+  left: 0;
+}

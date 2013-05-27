@@ -1,7 +1,7 @@
 // MapChat module: the actual app
 var Map = (function(){
 
-  var map, $map, tileLayer, mostRecentlyAddedMarkerId, markers = {};
+  var map, $map, tileLayer, markers = {};
   var state = 'map';
   var activeMarker;
   var userPosition;
@@ -9,20 +9,29 @@ var Map = (function(){
   var baseMarkerIcon, defaultMarkerIcon, activeMarkerIcon;
 
   var _init = function() {
-    $('.mainContainer, .hoodie-accountbar').removeClass('hide');
+    $('.mainContainer').removeClass('hide');
     $('body').addClass('mapView');
 
-    initMap();
-    registerHoodieEvents();
-    registerInterfaceEvents();
-    registerMapEvents();
+    if (! isInitialized ) {
+      initMap();
+      registerHoodieEvents();
+      registerInterfaceEvents();
+      registerMapEvents();
+      isInitialized = true
+    }
+
+    // show controls
+    Controls.show()
 
     // pre-populate map with markers
-    hoodie.store.findAll('marker').then( addAllMarkersFromStoreToMap );
+    hoodie.store.findAll('marker')
+    .then( addAllMarkersFromStoreToMap )
   };
 
   // Initialize the Leaflet map and its markers
+  var isInitialized = false;
   var initMap = function() {
+
     // Basic Leaflet marker icon that other marker types will inherit from
     baseMarkerIcon = L.Icon.extend({
       options: {
@@ -41,11 +50,12 @@ var Map = (function(){
     activeMarkerIcon = new baseMarkerIcon({iconUrl: 'assets/active-marker-icon.png'});
 
     // Set up the Leaflet map
-
     $map = $('#map');
+
     // Start in Berlin
     map = L.map('map').setView([52.500274,13.419693], 14);
     map.zoomControl.setPosition('bottomright');
+
     // Load tiles from OpenStreetMap
     tileLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
   }
@@ -60,37 +70,27 @@ var Map = (function(){
 
   // Register all interface events like clicks, form changes etc.
   var registerInterfaceEvents = function() {
+
     // Add new markers via touch hold
     $map.hammer().on('hold', onMapHold);
 
-    // Top right tool buttons
-    $('.geolocate').on('click', geolocate);
-    $('.bookmark').on('click', goToBookmark)
-    // Main container buttons
-    $('.tabBar button.list').on('click', onList);
-    $('.tabBar button.map').on('click', onMap);
+    $(document).on('map:geolocate', geolocate)
+    $(document).on('marker:activate', onMarkerActivate)
+    $(document).on('marker:deactivate', onMarkerDeactivate)
+    $(document).on('uichange', function() {
+      window.setTimeout(function() {
+        if (! activeMarker) {
+          return
+        }
+        console.log('center!')
+        centerMapOnCoordinates(activeMarker._latlng.lat, activeMarker._latlng.lng)
+        updateMap()
+      }, 200)
+    })
 
-    // Click event from markerListItem
-    $('.contentContainer').on('click', 'li.markerListItem', onMarkerListItemClick);
-
-    // Events from the addMarker template
-    $('.contentContainer').on('click', '.confirmMarker', onConfirmNewMarker);
-    $('.contentContainer').on('click', '.removeMarker', onRemoveMarkerClick);
-    // Listen for changes in the addMarker form and save them
-    $('.contentContainer').on('input change', 'input, select', onAddMarkerFormChange);
-    // Add or cancel message
-    $('.contentContainer').on('click', '.addMessageSection .addMessage', onAddMessageClick);
-    $('.contentContainer').on('click', '.cancelMessage', onCancelMessageClick);
     // Window resize
     $(window).on('resize', onResize);
     onResize();
-
-    // Since the side bar is always visible on large screens, populate it with markers
-    if($(window).width() >= desktopBreakpoint){
-      onList();
-      // evil hack, see https://github.com/gr2m/hoodie-mapchat/issues/85
-      _.delay(populateMarkerList, 500);
-    }
   }
 
   // Register general Leaflet events
@@ -107,22 +107,13 @@ var Map = (function(){
   var onMarkerFromStore = function(properties, options) {
     addMarkerToMap(properties);
 
+    // don't highlight markers that came from remote
     if(options.remote === true){
       return
     }
 
-    // add a human readable created at
-    addCreatedAtReadable(properties);
+    $.event.trigger('marker:show')
 
-    var html;
-    if(properties.fieldId){
-      showMarkerDetail(properties.id)
-    } else {
-      html = ich.addMarker(properties);
-      $('.contentContainer').empty().append(html);
-      setState('detail');
-      updateMap();
-    }
     activateMarker(properties.id);
     centerMapOnCoordinates(properties.lat, properties.lng);
     onResize();
@@ -146,11 +137,6 @@ var Map = (function(){
     if(activeMarker.options.couchId == properties.id){
       activeMarker = null;
     }
-    if($(window).width() < desktopBreakpoint){
-      setState('map');
-    } else {
-      setState('list');
-    }
     updateMap();
   };
 
@@ -170,71 +156,12 @@ var Map = (function(){
     addMarker(convertHammerEventToLeafletEvent(event, map));
   }
 
-  var goToBookmark = function(event) {
-    event.preventDefault()
-    var $el = $(event.target)
-    console.log($el.data(), $el.data('zoom'))
-    map.setView($el.data(), $el.data('zoom'))
-  };
 
-  var geolocate = function() {
-    $('.geolocation').addClass('loading');
+  var geolocate = function(event) {
     map.locate({setView: true, maxZoom: 16});
   };
 
-  var onMarkerListItemClick = function(event) {
-    var $dataItem = $(this).closest('li');
-    centerMapOnCoordinates($dataItem.data('lat'), $dataItem.data('lng'));
-    activateMarker($dataItem.data('id'));
-    if($(event.currentTarget).hasClass('active')){
-      // If the list item is already active and is tapped again, open it
-      showMarkerDetail($dataItem.data('id'));
-    } else {
-      // If it isn't already active, activate it and pan the map there
-      $('.contentContainer li.active').removeClass('active');
-      $dataItem.addClass('active');
-    }
-  }
-
-  var onConfirmNewMarker = function(event) {
-    var $marker = $(event.target).closest('[data-id]');
-    var id = $marker.data('id');
-    showMarkerDetail(id);
-    setState('detail');
-    updateMap();
-  }
-
-  var onRemoveMarkerClick = function(event) {
-    var $marker = $(event.target).closest('[data-id]');
-    var id = $marker.data('id');
-    hoodie.store.remove('marker', id);
-    removeMessagesOfMarker(id);
-  }
-
-  var onAddMarkerFormChange = function(event) {
-    var $marker = $(event.target).closest('[data-id]');
-    var update = {};
-    update[event.target.name] = event.target.value;
-    hoodie.store.update('marker', $marker.data('id'), update);
-  }
-
-  var onAddMessageClick = function(event) {
-    var $marker = $(event.target).closest('[data-id]');
-    var $textarea = $(event.target).siblings('textarea');
-    var messageData = {
-      messageBody: $textarea.val(),
-      createdByName: hoodie.account.username
-    };
-    messageData.parent = "marker/"+$marker.data('id');
-    hoodie.store.add('message', messageData).done(function(){
-      $textarea.val("");
-    });
-  }
-
-  var onCancelMessageClick = function(event) {
-    $(event.target).siblings('textarea').val("");
-    onList();
-  }
+  
 
   var onResize = function() {
     var $contentContainer = $('.contentContainer');
@@ -262,52 +189,33 @@ var Map = (function(){
   // -----------------------------
 
   var onMarkerClick = function(event) {
-    var id = event.target.options.couchId;
+    var markerId = event.target.options.couchId;
 
     // if this is the active marker, show it in detail view and nothing else
-    if(activeMarker && activeMarker.options.couchId == id){
-      showMarkerDetail(id);
-      setState('detail');
+    if(activeMarker && activeMarker.options.couchId == markerId){
+      $.event.trigger("marker:show", markerId)
       updateMap();
       return;
     }
 
-    map.panTo(event.target._latlng);
-    activateMarker(id);
+    $.event.trigger("marker:activate", markerId)
+  }
 
-    hoodie.store.find('marker', id).done(function(marker){
+  var onMarkerActivate = function(event, markerId) {
+
+    hoodie.store.find('marker', markerId)
+    .then( function(marker) {
+
+      // map.panTo(marker);
+      activateMarker(marker.id);
+
       var newState;
       var $contentContainer = $('.contentContainer');
-
-      // depending on what state we're in, tapping a marker does different things
-      switch(state){
-        // highlight the marker's item in the list
-        case "list":
-          var activeItem = $contentContainer.find("li[data-id='"+id+"']");
-          $contentContainer.find('li.active').removeClass('active');
-          activeItem.addClass('active');
-          $contentContainer.scrollTo(activeItem, 250);
-        break;
-        // show the current marker's details
-        case "detail":
-          showMarkerDetail(id);
-        break;
-        default:
-        // show the current marker's preview
-        case "preview":
-        case "map":
-          newState = 'preview';
-          addCreatedAtReadable(marker);
-          marker.options = {};
-          marker.options.messages = markers[marker.id].options.messages;
-          marker.active = true;
-          var html = ich.preview(marker);
-          $contentContainer.empty().append(html);
-          setState(newState);
-          onResize();
-        break;
-      }
     });
+  };
+
+  var onMarkerDeactivate = function(event, markerId) {
+    deactivateActiveMarker()
   };
 
   // ------------------
@@ -315,7 +223,8 @@ var Map = (function(){
   // ------------------
 
   var onLocationFound = function(event) {
-    $('.geolocation').removeClass('loading');
+    $.event.trigger('map:geolocated')
+
     var radius = event.accuracy / 2;
     if(!userPosition){
       userPosition = L.circle(event.latlng, radius).addTo(map);
@@ -325,27 +234,10 @@ var Map = (function(){
   };
 
   var onLocationError = function(event) {
-    $('.geolocation').removeClass('loading');
+    $.event.trigger('map:geolocation:error')
+
     if(userPosition) map.removeLayer(userPosition);
     userPosition = null;
-  };
-
-  // --------------
-  // State handlers
-  // --------------
-
-  // On mainContainer button
-  var onList = function(event){
-    var newState = 'list';
-    setState(newState);
-    updateMap();
-  };
-
-  // On mainContainer button
-  var onMap = function(event){
-    var newState = 'map';
-    setState(newState);
-    updateMap();
   };
 
   // -------------------------
@@ -382,24 +274,6 @@ var Map = (function(){
     }
   };
 
-  // Shows the marker's details in the content container
-  var showMarkerDetail = function(id) {
-    hoodie.store.find('marker', id).done(function(marker){
-      if(hoodie.account.username == marker.createdByName){
-        marker.showDeleteButton = true;
-      }
-      addCreatedAtReadable(marker);
-      var html = ich.markerDetails(marker);
-      resetContentContainer();
-      $('.contentContainer').empty().append(html);
-      setState('detail');
-      updateMap();
-      // Show all messages belonging to the marker
-      showAllMessagesOfParent("marker", marker.id);
-      onResize();
-    });
-  };
-
   // Adds a new marker to the store
   var addMarker = function(event) {
     var markerData = {
@@ -408,9 +282,7 @@ var Map = (function(){
       'lng': event.latlng.lng,
       'createdByName': hoodie.account.username
     };
-    hoodie.store.add('marker', markerData).then( function(marker) {
-      mostRecentlyAddedMarkerId = marker.id;
-    });
+    hoodie.store.add('marker', markerData)
   };
 
   var updateMarker = function(event) {
@@ -588,9 +460,7 @@ var Map = (function(){
     .bindLabel("", { noHide: true })
     .addTo(map)
     .showLabel()
-    .on('click', function(event){
-      onMarkerClick(event);
-    });
+    .on('click', onMarkerClick);
     if(state == "list"){
       populateMarkerList();
     }
@@ -599,28 +469,6 @@ var Map = (function(){
   // -----
   // Other
   // -----
-
-  // Sets state, unsets old state, manages body and container classes
-  var setState = function(newState){
-    if(newState === state) return;
-    $('.mainContainer, body').removeClass(state).addClass(newState);
-    state = newState;
-    switch(state){
-      case "list":
-        // Load all marker items into the list
-        populateMarkerList();
-      break;
-      default:
-      case "detail":
-      case "preview":
-        onResize();
-      break;
-      case "map":
-        $('.contentContainer').empty();
-        deactivateActiveMarker();
-      break;
-    }
-  };
 
   // Moves content container scroll position back to top
   var resetContentContainer = function() {
@@ -653,6 +501,9 @@ var Map = (function(){
 
   // Expose public methods
   return {
-    show: _init
+    show: _init,
+
+    locate: function(options) { map.locate(options) },
+    setView: function(options, zoom) { map.setView(options, zoom) }
   }
 }());

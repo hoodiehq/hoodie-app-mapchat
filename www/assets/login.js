@@ -22,15 +22,18 @@ var Login = {
 
   bindToEvents : function() {
     this.$el.on('submit', 'form', this.handleSubmit)
+    hoodie.account.on('signout', this.show)
   },
 
   show : function() {
     if (! this.isInitialized ) this.init();
     this.reset()
+    Controls.hide();
     this.$container.show().html( this.$el )
   },
 
   hide : function() {
+    if (! this.isInitialized ) this.init();
     this.$container.hide().html( '' )
   },
 
@@ -56,6 +59,7 @@ var Login = {
 }
 
 
+Login.show = bind(Login.show, Login)
 Login.handleSubmit = bind(Login.handleSubmit, Login)
 Login.onSignInSucces = bind(Login.onSignInSucces, Login)
 Login.onSignInError = bind(Login.onSignInError, Login)

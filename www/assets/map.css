@@ -1,0 +1,91 @@
+/* controls */
+.leaflet-control-zoom a {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  font-size: 24px;
+  line-height: 30px;
+}
+
+.leaflet-container a.leaflet-active {
+  outline: none;
+}
+
+.leaflet-touch .leaflet-control-zoom a {
+  width: 36px;
+  height: 36px;
+  padding: 3px;
+  line-height: 36px;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  width: 27px;
+  height: 27px;
+}
+
+.leaflet-popup-scrolled {
+  border: none;
+}
+
+.leaflet-marker-icon:after{
+  content: "2";
+  display: block;
+  width: 10px;
+  height: 10px;
+  background:red;
+}
+
+.leaflet-label.show{
+  display: block;
+}
+
+.leaflet-label,
+.contentContainer .markerListItem a.markerLocation:after{
+  background: rgb(255, 255, 255);
+  background-clip: padding-box;
+  border: none;
+  -webkit-border-radius: 50%;
+     -moz-border-radius: 50%;
+      -ms-border-radius: 50%;
+          border-radius: 50%;
+  color: #111;
+  display: none;
+  font: 12px/20px "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  padding: 0;
+  position: absolute;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 6;
+  text-align: center;
+  width: 19px;
+  height: 19px;
+}
+
+/*
+------------------ MAP
+*/
+
+#map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+.mapContainer {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  transition: bottom .2s, left .2s;
+}
+.layer-select {
+  position: absolute;
+  z-index: 1;
+  top: 80px;
+  left: 10px;
+}
+
+#map .btn-danger {
+  color: #FFF;
+}
+
+.modal {
+  width: 250px;
+  margin-left: -125px;
+}

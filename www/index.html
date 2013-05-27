@@ -10,197 +10,242 @@
 
     <link rel="stylesheet" href="vendor/bootstrap/docs/assets/css/bootstrap.css">
     <link rel="stylesheet" href="vendor/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="assets/dialogs.css">
+    <link rel="stylesheet" href="assets/map.css">
+    <link rel="stylesheet" href="assets/controls.css">
+    <link rel="stylesheet" href="assets/marker-list.css">
+    <link rel="stylesheet" href="assets/detail-view.css">
     <link rel="stylesheet" href="assets/main.css">
   </head>
   
 
   <body>
 
-    <!-- Leaflet Map Container -->
-    <div id="map"></div>
+    <!-- list of markers -->
+    <div id="markerList" class="hide">
+      <header>
+        <input type="search" placeholder="Search">
+      </header>
+      <div class="content"></div>
+    </div>
+
+    <!-- detail view -->
+    <div id="detail-view" class="hide"></div>
+
+    <div class="mapContainer">
+      <!-- Leaflet Map Container -->
+      <div id="map"></div>
+
+      <!-- controls -->
+      <div id="controls">
+        <div class="toggle-marke-list">
+          <button class="btn btn-medium btn-inverse">
+            <i class="icon-list icon-white"></i>
+          </button>
+        </div>
+
+        <div class="hoodie-accountbar">
+          <div class="geolocation">
+            <button class="geolocate btn btn-medium btn-inverse" data-toggle="dropdown">
+              <i class="icon-screenshot icon-white"></i>
+              <i class="icon-refresh icon-white"></i>
+            </button>
+          </div>
+          
+          <div class="user">
+            <span class="btn-group">
+              <button class="btn btn-medium dropdown-toggle btn-inverse" data-toggle="dropdown">
+                  <i class="icon-user icon-white"></i>
+              </button>
+              <ul class="dropdown-menu pull-right nav">
+                <li class="nav-header">
+                  <span class="hoodie-username">...<!-- usern name will be filled in here --></span>
+                </li>
+
+                <li>
+                  <a href="#" data-hoodie-action="signout">
+                    <i class="icon-off"></i>
+                    Sign out
+                  </a>
+                </li>
+
+                <li class="divider" style="height: 2px;"></li>
+                <li class="nav-header">
+                  <span>Bookmarks</span>
+                </li>
+                <li>
+                  <a tabindex="-1" href="#" class="bookmark" data-lat="52.500274" data-lng="13.419693" data-zoom="16">
+                    <i class="icon-map-marker"></i>
+                    Berlin
+                  </a>
+                </li>
+                <li>
+                  <a tabindex="-1" href="#" class="bookmark" data-lat="47.369234" data-lng="8.539252" data-zoom="14">
+                    <i class="icon-map-marker"></i>
+                    Zurich
+                  </a>
+                </li>
+                <li>
+                  <a tabindex="-1" href="#" class="bookmark" data-lat="52.95474" data-lng="-1.158972" data-zoom="14">
+                    <i class="icon-map-marker"></i>
+                    Nottingham
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div><!-- /.user -->
+
+          <div class="hoodie-account-signedout hoodie-account-error hide">
+            <span class="btn-group">
+              <button class="btn btn-medium dropdown-toggle btn-danger" data-toggle="dropdown">
+                <i class="icon-exclamation-sign icon-white"></i>
+              </button>
+              <ul class="dropdown-menu pull-right nav">
+                <li class="nav-header">
+                  Your session ran out<br>
+                  or was stopped.
+                </li>
+                <li class="divider" style="height: 2px;"></li>
+                <li>
+                  <a href="#" data-hoodie-action="signin">
+                    <i class="icon-user"></i> Sign in again
+                  </a>
+                </li>
+              </ul>
+            </span>
+          </div><!-- /.hoodie-account-error -->
+        </div><!--/hoodieAccountBar -->
+      </div>
+    </div>
 
     <!-- used for dialogs -->
     <div id="dialog" class="hide"></div>
 
-    <div class="mainContainer map hide">
-      <div class="tabBar btnGroup group">
-        <button class="list btn btn-large"><i class="icon-th-list icon-black"></i>Marker list</button>
-        <button class="disabled-list btn btn-large" disabled="disabled"><i class="icon-th-list icon-black" ></i>Marker list</button>
-        <button class="map btn btn-large right"><i class="icon-chevron-down icon-black"></i> Close</button>
-      </div>
-      <div class="contentContainer">
-
-      </div>
-    </div>
-
-
-    <!-- Hoodie accountbar -->
-    <div class="hoodie-accountbar">
-      <div class="geolocation">
-        <button class="geolocate btn btn-medium btn-inverse" data-toggle="dropdown">
-          <i class="icon-screenshot icon-white"></i>
-          <i class="icon-refresh icon-white"></i>
-        </button>
-      </div>
-
-      <div class="user">
-        <span class="btn-group">
-          <button class="btn btn-medium dropdown-toggle btn-inverse" data-toggle="dropdown">
-              <i class="icon-user icon-white"></i>
-          </button>
-          <ul class="dropdown-menu pull-right nav">
-            <li class="nav-header">
-              <span class="hoodie-username">...<!-- usern name will be filled in here --></span>
-            </li>
-
-            <li>
-              <a href="#" data-hoodie-action="signout">
-                <i class="icon-off"></i>
-                Sign out
-              </a>
-            </li>
-
-            <li class="divider" style="height: 2px;"></li>
-            <li class="nav-header">
-              <span>Bookmarks</span>
-            </li>
-            <li>
-              <a tabindex="-1" href="#" class="bookmark" data-lat="52.500274" data-lng="13.419693" data-zoom="16">
-                <i class="icon-map-marker"></i>
-                Berlin
-              </a>
-            </li>
-            <li>
-              <a tabindex="-1" href="#" class="bookmark" data-lat="47.369234" data-lng="8.539252" data-zoom="14">
-                <i class="icon-map-marker"></i>
-                Zurich
-              </a>
-            </li>
-            <li>
-              <a tabindex="-1" href="#" class="bookmark" data-lat="52.95474" data-lng="-1.158972" data-zoom="14">
-                <i class="icon-map-marker"></i>
-                Nottingham
-              </a>
-            </li>
-          </ul>
-        </span>
-      </div><!-- /.user -->
-
-      <div class="hoodie-account-signedout hoodie-account-error hide">
-        <span class="btn-group">
-          <button class="btn btn-medium dropdown-toggle btn-danger" data-toggle="dropdown">
-            <i class="icon-exclamation-sign icon-white"></i>
-          </button>
-          <ul class="dropdown-menu pull-right nav">
-            <li class="nav-header">
-              Your session ran out<br>
-              or was stopped.
-            </li>
-            <li class="divider" style="height: 2px;"></li>
-            <li>
-              <a href="#" data-hoodie-action="signin">
-                <i class="icon-user"></i> Sign in again
-              </a>
-            </li>
-          </ul>
-        </span>
-      </div><!-- /.hoodie-account-error -->
-    </div><!--/hoodieAccountBar -->
+    
 
 
     <!-- 
       TEMPLATES
     -->
-    <script id="preview" type="text/html">
-      <ul>
-        {{>markerListItem}}
-      </ul>
-    </script>
 
     <script id="markerListItem" class="partial" type="text/html">
-      <li class="markerListItem group {{#active}} active{{/active}}" data-id="{{id}}" data-lat="{{lat}}" data-lng="{{lng}}">
+        <li class="markerListItem group {{#active}} active{{/active}}" data-id="{{id}}" data-lat="{{lat}}" data-lng="{{lng}}">
         <a href="#" class="markerInfo">
           <span class="name">{{name}}</span>
-          <span class="owner">{{createdByName}}</span> | <span class="date">{{createdAtReadable}}</span>
+          <span class="owner">{{createdByName}}</span> | <span class="date">{{ createdTimeAgo }}</span>
         </a>
-        <a href="#" class="markerLocation" data-messages="{{options.messages}}">
+        <a href="#" class="markerLocation" data-messages="{{options.messages.length}}">
         </a>
       </li>
     </script>
 
-    <script id="addMarker" type="text/html">
-      <div class="addMarker" data-id="{{id}}" data-lat="{{lat}}" data-lng="{{lng}}">
-        <h3>New marker</h3>
-        <form class="marker">
-          <fieldset>
-            <input type="text" placeholder="Name" name="name"></input>
-            <span class="owner">{{createdByName}}</span> | <span class="date">{{createdAtReadable}}</span>
-          </fieldset>
-        </form>
-        <a href="#" class="confirmMarker btn btn-large btn-success"><i class="icon-ok icon-white"></i>Add marker</a>
-        <a href="#" class="removeMarker btn btn-large btn-warning"><i class="icon-trash icon-white"></i>Cancel</a>
+    <script id="edit" type="text/html">
+      <form data-id="{{id}}" class="marker">
+        <p>
+          <h3>Name: <input type="text" name="name" required></h3>
+        </p>
+        <p>
+          <button class="save btn btn-inverse btn-success"><i class="icon-ok icon-white"></i> save marker</a>
+        </p>
+      </form>
+
+      <div class="close">
+        ×
       </div>
+      </form>
     </script>
 
-    <script id="markerDetails" type="text/html">
-      <div class="markerDetails" data-id="{{id}}" data-lat="{{lat}}" data-lng="{{lng}}">
-        <div class="infoContainer">
-          <span class="name">{{name}}</span>
-          <p><span class="owner">{{createdByName}}</span> | <span class="date">{{createdAtReadable}}</span></p>
-          {{# feature}}
-            <p>{{feature.properties.Landwirt}}</p>
-            <p>{{feature.properties.Flaeche}}ha {{feature.properties.Kultur}} - {{feature.properties.Menge}}</p>
-          {{/ feature}}
-          {{#showDeleteButton}}
-          <a href="#" class="removeMarker btn btn-large btn-danger"><i class="icon-trash icon-white"></i>Delete marker</a>
-          {{/showDeleteButton}}
+    <script id="preview" type="text/html">
+      <article data-id="{{id}}" class="marker">
+        <h3>Title: {{name}}</h3>
+        <p>
+          <span class="owner"><i class="icon-user"></i> {{createdByName}}</span> 
+          | <span class="date"><i class="icon-time"></i> {{ createdTimeAgo }}</span>
+          | <span class="comment"><i class="icon-comment"></i> <a href="#" class="expand">{{options.messages.length}} Messages.</a></span>
+          {{#belongsToMe}}
+          | <a href="#" class="edit"><i class="icon-pencil"></i> edit</a>
+          | <a href="#" class="destroy"><i class="icon-trash"></i> delete</a>
+          {{/belongsToMe}}
+        </p>
+
+        <div class="close">
+          ×
         </div>
-        <div class="messagesContainer">
-          <h4 class="hide">Messages</h4>
+      </article>
+    </script>
+
+    <script id="detail" type="text/html">
+    <article data-id="{{id}}" class="marker">
+        <h3>
+          Title: {{name}}
+        </h3>
+        <p>
+          <span class="owner"><i class="icon-user"></i> {{createdByName}}</span> 
+          | <span class="date"><i class="icon-time"></i> {{ createdTimeAgo }}</span>
+          | <span class="comment"><i class="icon-comment"></i> {{options.messages.length}} Messages.</span>
+          {{#belongsToMe}}
+          | <a href="#" class="edit"><i class="icon-pencil"></i> edit</a>
+          | <a href="#" class="destroy"><i class="icon-trash"></i> destroy</a>
+          {{/belongsToMe}}
+        </p>
+
+        <div class="messages">
+          <header>
+            <form class="message">
+              <h4>New message</h4>
+              <textarea name="messageBody" required></textarea>
+              <button class="btn btn-inverse"><i class="icon-ok icon-white"></i> Send message</button>
+            </form>
+          </header>
+          
+          <div class="list">
+            {{#options.messages}}
+              {{>message}}
+            {{/options.messages}}
+          </div>          
         </div>
-        <div class="addMessageSection">
-          <h4>New message</h4>
-          <textarea name="messageBody"></textarea>
-          <a href="#" class="addMessage btn btn-large btn-success"><i class="icon-ok icon-white"></i>Send message</a>
-          <a href="#" class="cancelMessage btn btn-large btn-warning"><i class="icon-trash icon-white"></i>Cancel</a>
+
+
+        <div class="close">
+          ×
         </div>
-      </div>
+      </article>
     </script>
 
     <script id="message" type="text/html">
-      <li>
-        <p class="metaData"><span class="owner">#{{index}} - {{createdByName}}</span> - <span class="date">{{createdAtReadable}}</span></p>
+      <article class="message">
+        <p class="metaData"><span class="owner"><i class="icon-user"></i> {{createdByName}}</span> - <i class="icon-time"></i><span class="date" title="{{createdAt}}"> {{createdAt}}</span></p>
         <p class="messageBody">{{messageBody}}</p>
-      </li>
+      </article>
     </script>
+
 
     <script id="markerList" type="text/html">
       {{#data}}
-        <ul class="markerList">
-      {{#markers}}
+      <ul class="list">
+        {{#markers}}
         {{>markerListItem}}
-      {{/markers}}
-        </ul>
+        {{/markers}}
+      </ul>
       {{/data}}
+
       {{^data}}
-        <div class="emptyMarkerList">
-          <h1>No markers</h1>
-          <span>Click and hold on the map<br>to add a marker</span>
-        </div>
+      <div class="emptyMarkerList">
+        <h1>No markers</h1>
+        <span>Click and hold on the map<br>to add a marker</span>
+      </div>
       {{/data}}
     </script>
 
     <script id="login" type="text/html">
-      <div class="signInContainer">
-        <div class="content">
-          <h1>Hoodie MapChat</h1>
-          <div class="alert alert-warn hide"></div>
-          <form>
-            <input type="text" name="username" class="username input-block-level" placeholder="Username">
-            <input type="password" name="password" class="password input-block-level" placeholder="Password">
-            <button class="signIn btn btn-large">Sign in</button>
-          </form>
-        </div>
+      <div class="content">
+        <h1>Hoodie MapChat</h1>
+        <div class="alert alert-warn hide"></div>
+        <form>
+          <input type="text" name="username" class="username input-block-level" placeholder="Username">
+          <input type="password" name="password" class="password input-block-level" placeholder="Password">
+          <button class="signIn btn btn-large btn-inverse">Sign in</button>
+        </form>
       </div>
     </script>
 
@@ -210,7 +255,7 @@
     <script src="vendor/bootstrap.modalform/bootstrap.modalform.js"></script>
     <script src="vendor/leaflet/dist/leaflet.js"></script>
     <script src="vendor/leaflet.label/dist/leaflet.label.js"></script>
-    <script src="vendor/hoodie/hoodie.min.js"></script>
+    <script src="vendor/hoodie/hoodie.js"></script>
     <script src="vendor/underscore/underscore-min.js"></script>
     <script src="vendor/jquery.scrollTo.min.js"></script>
     <script src="vendor/jquery.hammer.min.js"></script>
@@ -218,11 +263,15 @@
     <script src="vendor/ICanHaz.min.js"></script>
     <script src="vendor/fastclick.js"></script>
     <script src="vendor/date-utils.min.js"></script>
+    <script src="vendor/jquery.timeago.js"></script>
 
     <!-- MapChat -->
     <script src="assets/main.js"></script>
     <script src="assets/app.js"></script>
     <script src="assets/login.js"></script>
+    <script src="assets/controls.js"></script>
+    <script src="assets/marker-list.js"></script>
+    <script src="assets/detail-view.js"></script>
     <script src="assets/map.js"></script>
   </body>
 </html>
