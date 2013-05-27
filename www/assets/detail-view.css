@@ -75,7 +75,7 @@
   bottom: 0;
 }
 #markerList ~ #detail-view {
-  left: 320px;
+  left: 280px;
 }
 #markerList.hide ~ #detail-view {
   left: 0;
