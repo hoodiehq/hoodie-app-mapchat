@@ -87,7 +87,6 @@
   // 
   function onSignInSucces(username) {
     hide()
-    Map.show();
   }
 
   // 
