@@ -25,10 +25,6 @@ html {
   box-shadow: 0 -2px 3px 2px rgba(0,0,0,.7);
 }
 
-#markerList[data-mode="hide"] {
-  /*left: -280px;*/
-}
-
 #markerList header {
   margin: 10px 10px 0 10px;
 }

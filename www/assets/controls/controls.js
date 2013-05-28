@@ -33,6 +33,8 @@
     $document.on("map:geolocation:error", handleGeolocateDone)
     $document.on("dialog:show", hide)
     $document.on("dialog:hide", show)
+
+    hoodie.account.on('signout', hide)
   }
 
   // 
