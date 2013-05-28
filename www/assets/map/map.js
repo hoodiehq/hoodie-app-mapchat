@@ -2,6 +2,7 @@
 (function($, hoodie, ich){
 
   $document = $(document)
+  $window = $(window)
   var map, $map, tileLayer, markers = {};
   var activeMarker;
   var userPosition;
@@ -72,15 +73,16 @@
     // Add new markers via touch hold
     $map.hammer().on('hold', onMapHold);
 
-    $(document).on('map:geolocate', geolocate)
-    $(document).on('map:center', function (event, marker) {
-      centerMapOnCoordinates(marker)
+    $document.on('map:geolocate', geolocate)
+    $document.on('map:center', function (event, marker, offset) {
+      console.log('map:center')
+      centerMapOnCoordinates(marker, offset)
     })
-    $(document).on('marker:activate', onMarkerActivate)
-    $(document).on('marker:deactivate', onMarkerDeactivate)
+    $document.on('marker:activate', onMarkerActivate)
+    $document.on('marker:deactivate', onMarkerDeactivate)
 
     // Window resize
-    $(window).on('resize', onResize);
+    $window.on('resize', onResize);
     onResize();
   }
 
@@ -157,9 +159,9 @@
     $contentContainer.css('height', 'auto');
     var padding = 11;
     var targetHeight = $contentContainer.children().outerHeight(true);
-    var maxHeight = $(window).height() * 0.66-$('.mainContainer .tabBar').height() - padding;
-    if($(window).width() >= desktopBreakpoint){
-      targetHeight = $(window).height() - $('.mainContainer .tabBar').height() - padding;
+    var maxHeight = $window.height() * 0.66-$('.mainContainer .tabBar').height() - padding;
+    if($window.width() >= desktopBreakpoint){
+      targetHeight = $window.height() - $('.mainContainer .tabBar').height() - padding;
     } else {
       if(targetHeight > maxHeight){
         targetHeight = maxHeight;
@@ -315,7 +317,7 @@
       $container.append('<ul></ul>');
     }
     $('ul', $container).append(html);
-    if($(window).width() >= desktopBreakpoint){
+    if($window.width() >= desktopBreakpoint){
       $contentContainer.scrollTo("max", 0);
     } else {
       $contentContainer.scrollTo("max", 0);
@@ -382,11 +384,14 @@
   // Map
   // ---
 
-  var centerMapOnCoordinates = function(properities) {
+  var centerMapOnCoordinates = function(properities, extraOffset) {
     var lat = properities.lat, 
         lng = properities.lng
 
-    console.log('centerMapOnCoordinates')
+    if (! extraOffset ) extraOffset = {}
+    if (! extraOffset.x ) extraOffset.x = 0
+    if (! extraOffset.y ) extraOffset.y = 0
+    console.log('centerMapOnCoordinates', extraOffset)
     
     // map might be out screen, but we want to center
     // on visible part, so:
@@ -394,9 +399,10 @@
     var point = map.project([lat, lng])
     // 2. calculate offsets & update pixel point
     var offsetLeft = $('.mapContainer').offset().left
-    var offsetBottom = $(window).scrollTop()
-    point.x += offsetLeft / 2
-    point.y -= offsetBottom / 2
+    var offsetBottom = $window.scrollTop()
+    point.x += offsetLeft / 2   + extraOffset.x / 2
+    point.y -= offsetBottom / 2 + extraOffset.y / 2
+
     // 3. turn pixel point back to lat/lng
     var latlng = map.unproject(point)
 

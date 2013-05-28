@@ -1,7 +1,9 @@
 (function($, hoodie, ich){
 
   var $document = $(document);
-  var $el;
+  var $window = $(window);
+  var $body = $(document.body);
+  var $el, $marker;
   var currentMarker = {};
 
   // 
@@ -20,7 +22,6 @@
   function findElements () {
     $el = $('#marker-detail')
     $marker = $el.find(' > article')
-    $body = $('body')
   }
 
   // 
@@ -34,9 +35,9 @@
     $el.on('submit', '.marker', save)
     $el.on('submit', '.message', saveMessage)
 
-    $(document).on('marker:edit', edit)
-    $(document).on('marker:show', show)
-    $(document).on('marker:activate', show)
+    $document.on('marker:edit', edit)
+    $document.on('marker:show', show)
+    $document.on('marker:activate', show)
   }
 
   // 
@@ -54,8 +55,8 @@
        return
      }
 
-     if ( $(window).scrollTop() < 100) {
-       $('body').animate({scrollTop: 100}, 500)
+     if ( $window.scrollTop() < 100) {
+       $body.animate({scrollTop: 100}, 300)
      }
 
      hoodie.store.find('marker', markerId)
@@ -76,8 +77,8 @@
   function preview(markerId) {
     if (! markerId) markerId = currentMarker.id;
 
-    if ( $(window).scrollTop() < 100) {
-      $('body').animate({scrollTop: 100}, 500)
+    if ( $window.scrollTop() < 100) {
+      $body.animate({scrollTop: 100}, 300)
     }
 
     hoodie.store.find('marker', markerId)
@@ -93,19 +94,21 @@
     if (! markerId) markerId = currentMarker.id;
 
     // if already expanded, close it.
-    if ( $(window).scrollTop() > 100 ) {
+    if ( $window.scrollTop() > 100 ) {
       hide()
       return
     }
 
-    var maxScroll = $(window).height() - 100
-    if ( $(window).scrollTop() < maxScroll) {
-      $('body').animate({scrollTop: maxScroll}, 500, function() {
-        hoodie.store.find('marker', markerId).then( function(marker) {
-          $.event.trigger('map:center', marker)  
-        })
+    var maxScroll = $window.height() - 100
+    var scrollTop = $window.scrollTop()
+    var diff = maxScroll - scrollTop
+    if ( scrollTop < maxScroll) {
+
+      hoodie.store.find('marker', markerId).then( function(marker) {
+        $.event.trigger('map:center', [marker, { y: diff }])
       })
 
+      $body.animate({scrollTop: maxScroll}, 300)
     }
 
     hoodie.store.find('marker', markerId)
@@ -173,12 +176,14 @@
   // 
   // 
   function hide() {
-    $('body').animate({scrollTop: 0}, 200, function() {
+    var scrollTop = $window.scrollTop()
+    $.event.trigger('map:center', [currentMarker, { y : -scrollTop}])
+    currentMarker = {}
+    unsubscribeFromScroll()
+    $.event.trigger('marker:deactivate')
+
+    $body.animate({scrollTop: 0}, 200, function() {
       setMode('hide')
-      $.event.trigger('marker:deactivate')
-      $.event.trigger('map:center', currentMarker)
-      currentMarker = {}
-      unsubscribeFromScroll()
     }.bind(this))
   }
 
@@ -195,7 +200,7 @@
       var html = ich.edit(marker);
       $el.html( html )
 
-      $('body').animate({scrollTop: 9999}, 500)
+      $body.animate({scrollTop: 9999}, 300)
     }.bind(this) );
 
     
@@ -209,7 +214,7 @@
     var name = $el.find('input[name=name]').val()
     hoodie.store.update('marker', currentMarker.id, {name: name})
     .then( render )
-    $('body').animate({scrollTop: 9999}, 500)
+    $body.animate({scrollTop: 9999}, 300)
   }
 
 
@@ -250,14 +255,14 @@
   // 
   function subscribeToScroll() {
     unsubscribeFromScroll()
-    $(window).on('scroll', handleScroll)
+    $window.on('scroll', handleScroll)
   }
 
   // 
   // 
   // 
   function unsubscribeFromScroll() {
-    $(window).unbind('scroll', handleScroll)
+    $window.unbind('scroll', handleScroll)
     window.clearTimeout( _scrollEndTimeout )
   }
 
@@ -274,10 +279,10 @@
   // 
   // 
   function checkScrollPosition () {
-    var scrollTop = $(window).scrollTop()
+    var scrollTop = $window.scrollTop()
 
     if (scrollTop < 80) {
-      $('body').animate({scrollTop: 0}, 200, hide)
+      $body.animate({scrollTop: 0}, 200, hide)
     }
   }
 
