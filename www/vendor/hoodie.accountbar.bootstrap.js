@@ -57,7 +57,7 @@ Hoodie.extend('hoodstrap', (function() {
     $('body').on('click.hoodie.data-api', '[data-hoodie-action]', function(event) {
       event.preventDefault()
       
-      var $element = $(event.target),
+      var $element = $(event.currentTarget),
           action   = $element.data('hoodie-action'),
           $form;
 
