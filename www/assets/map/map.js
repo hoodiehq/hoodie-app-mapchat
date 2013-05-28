@@ -107,6 +107,7 @@
 
     activateMarker(properties.id);
     centerMapOnCoordinates(properties);
+    // TODO: not sure if we still need this anywhere
     $.event.trigger('marker:edit', properties.id)
     onResize();
   };
@@ -152,7 +153,7 @@
     map.locate({setView: true, maxZoom: 16});
   };
 
-  
+
 
   var onResize = function() {
     var $contentContainer = $('.contentContainer');
@@ -385,14 +386,15 @@
   // ---
 
   var centerMapOnCoordinates = function(properities, extraOffset) {
-    var lat = properities.lat, 
+    if(!properities.lat || !properities.lng) return;
+    var lat = properities.lat,
         lng = properities.lng
 
     if (! extraOffset ) extraOffset = {}
     if (! extraOffset.x ) extraOffset.x = 0
     if (! extraOffset.y ) extraOffset.y = 0
     console.log('centerMapOnCoordinates', extraOffset)
-    
+
     // map might be out screen, but we want to center
     // on visible part, so:
     // 1. turn lat/lng into pixels

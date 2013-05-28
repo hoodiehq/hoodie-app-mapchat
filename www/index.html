@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="assets/marker-detail/marker-detail.css">
     <link rel="stylesheet" href="assets/app.css">
   </head>
-  
+
 
   <body>
 
@@ -51,7 +51,7 @@
               <i class="icon-refresh icon-white"></i>
             </button>
           </div>
-          
+
           <div class="user">
             <span class="btn-group">
               <button class="btn btn-medium dropdown-toggle btn-inverse" data-toggle="dropdown">
@@ -121,10 +121,10 @@
     <!-- used for dialogs -->
     <div id="dialog" class="hide"></div>
 
-    
 
 
-    <!-- 
+
+    <!--
       TEMPLATES
     -->
 
@@ -142,7 +142,7 @@
     <script id="edit" type="text/html">
       <form data-id="{{id}}" class="marker">
         <p>
-          <h3>Name: <input type="text" name="name" required></h3>
+          <h3>Name: <input type="text" name="name" placeholder="{{name}}" value="{{name}}" required></h3>
         </p>
         <p>
           <button class="save btn btn-inverse btn-success"><i class="icon-ok icon-white"></i> save marker</a>
@@ -162,7 +162,7 @@
             Title: {{name}}
           </h3>
           <p>
-            <span class="owner"><i class="icon-user"></i> {{createdByName}}</span> 
+            <span class="owner"><i class="icon-user"></i> {{createdByName}}</span>
             | <span class="date"><i class="icon-time"></i> {{ createdTimeAgo }}</span>
             | <span class="comment"><i class="icon-comment"></i> {{options.messages.length}} Messages.</span>
             {{#belongsToMe}}
@@ -180,12 +180,12 @@
               <button class="btn btn-inverse"><i class="icon-ok icon-white"></i> Send message</button>
             </form>
           </header>
-          
+
           <div class="list">
             {{#options.messages}}
               {{>message}}
             {{/options.messages}}
-          </div>          
+          </div>
         </div>
 
 

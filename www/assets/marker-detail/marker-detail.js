@@ -6,27 +6,27 @@
   var $el, $marker;
   var currentMarker = {};
 
-  // 
+  //
   // init gets run when app:ready event gets fired
   // on app startup.
-  // 
+  //
   function init() {
     findElements()
     bindToEvents()
   };
   $document.on('app:ready', init)
 
-  // 
+  //
   // cache jQuery selectors
-  // 
+  //
   function findElements () {
     $el = $('#marker-detail')
     $marker = $el.find(' > article')
   }
 
-  // 
-  // bind to outsite events
-  // 
+  //
+  // bind to outside events
+  //
   function bindToEvents() {
     $el.on('click', '.close', hide)
     $el.on('click', '.edit', edit)
@@ -35,14 +35,16 @@
     $el.on('submit', '.marker', save)
     $el.on('submit', '.message', saveMessage)
 
-    $document.on('marker:edit', edit)
+    //$document.on('marker:edit', edit)
     $document.on('marker:show', show)
     $document.on('marker:activate', show)
+
+    hoodie.store.on('add:marker', editNewMarker )
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function show(event, markerId) {
     if (isCurrentMarker(markerId)) {
        detail(markerId)
@@ -62,18 +64,18 @@
      hoodie.store.find('marker', markerId)
      .then( render );
   }
-  
-  // 
-  // 
-  // 
+
+  //
+  //
+  //
   function hide() {
     $el.addClass('hide')
     $leafletControls.hide()
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function preview(markerId) {
     if (! markerId) markerId = currentMarker.id;
 
@@ -87,9 +89,9 @@
     subscribeToScroll()
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function detail(markerId) {
     if (! markerId) markerId = currentMarker.id;
 
@@ -117,46 +119,46 @@
     subscribeToScroll()
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function isCurrentMarker(marker) {
     return currentMarker.id === (marker.id || marker)
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function isntCurrentMarker(marker) {
     return currentMarker.id !== (marker.id || marker)
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function mode() {
     return $el.data('mode')
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function setMode(mode) {
     $el.attr('data-mode', mode)
     $el.data('mode', mode)
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function render(marker) {
     _addMessagesToMarker(marker)
     .then( function(marker) {
       if (marker && marker.type === 'marker') {
-        // update current marke
+        // update current marker
         currentMarker = marker
       } else {
-        // update current marke
+        // update current marker
         marker = currentMarker
       }
 
@@ -172,9 +174,9 @@
     }.bind(this))
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function hide() {
     var scrollTop = $window.scrollTop()
     $.event.trigger('map:center', [currentMarker, { y : -scrollTop}])
@@ -187,28 +189,39 @@
     }.bind(this))
   }
 
-  // 
-  // 
-  // 
-  function edit( event, markerId ) {
-    setMode('show')
-
-    if (! markerId) markerId = currentMarker.id;
-
-    hoodie.store.find('marker', markerId)
-    .then( function(marker) {
-      var html = ich.edit(marker);
-      $el.html( html )
-
-      $body.animate({scrollTop: 9999}, 300)
-    }.bind(this) );
-
-    
+  // Triggered when this client adds a new marker
+  //
+  //
+  function editNewMarker(marker){
+    if(marker.createdByName === hoodie.account.username){
+      setMode('show')
+      showEditView(marker)
+    }
   }
 
-  // 
-  // 
-  // 
+  // Triggered when this client edits an existing marker
+  //
+  //
+  function edit( event, markerId ) {
+    if(!markerId){
+      markerId = $(event.target).closest('[data-id]').data('id');
+    }
+    setMode('show')
+    hoodie.store.find('marker', markerId).then( function(marker) {
+      showEditView(marker)
+    })
+  }
+
+  function showEditView(marker){
+    currentMarker = marker;
+    var html = ich.edit(marker);
+    $el.html( html )
+    $body.animate({scrollTop: 9999}, 300)
+  }
+
+  //
+  //
+  //
   function save(event) {
     event.preventDefault()
     var name = $el.find('input[name=name]').val()
@@ -218,12 +231,12 @@
   }
 
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function saveMessage(event) {
     event.preventDefault()
-    
+
     var message = {
       messageBody: $el.find('form.message textarea[name=messageBody]').val(),
       createdByName: hoodie.account.username,
@@ -233,9 +246,9 @@
     .then( function() { render() }.bind(this) )
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function destroy(event) {
     event.preventDefault()
 
@@ -250,34 +263,34 @@
   }
 
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function subscribeToScroll() {
     unsubscribeFromScroll()
     $window.on('scroll', handleScroll)
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function unsubscribeFromScroll() {
     $window.unbind('scroll', handleScroll)
     window.clearTimeout( _scrollEndTimeout )
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   var _scrollEndTimeout = null
   function handleScroll(event) {
     window.clearTimeout( _scrollEndTimeout )
     _scrollEndTimeout = window.setTimeout( checkScrollPosition, 150 )
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function checkScrollPosition () {
     var scrollTop = $window.scrollTop()
 
@@ -288,9 +301,9 @@
 
   // private
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function _addMessagesToMarker( marker ) {
     return hoodie.store.findAll( _filterMessagesFor(marker) ).then( function(messages) {
       marker.options || (marker.options = {})
@@ -299,9 +312,9 @@
     })
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function _filterMessagesFor(marker) {
     return function(object) {
       return object.type === 'message' && object.parent == "marker/" + marker.id
