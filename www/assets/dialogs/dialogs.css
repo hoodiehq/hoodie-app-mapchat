@@ -15,11 +15,11 @@
   overflow: auto;
   position: relative;
   background: #111;
-  background: url(noise.png), -moz-radial-gradient(50% 0, circle cover, #333 0%, #000 100%);
-  background: url(noise.png), -webkit-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
-  background: url(noise.png), -o-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
-  background: url(noise.png), -ms-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
-  background: url(noise.png), radial-gradient(circle at 50% 0, #333 0%,#000 100%);
+  background: url(images/noise.png), -moz-radial-gradient(50% 0, circle cover, #333 0%, #000 100%);
+  background: url(images/noise.png), -webkit-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
+  background: url(images/noise.png), -o-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
+  background: url(images/noise.png), -ms-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
+  background: url(images/noise.png), radial-gradient(circle at 50% 0, #333 0%,#000 100%);
   border-radius: 0 0 10px 10px;
   box-shadow: 0 0 5px 1px #000;
 }

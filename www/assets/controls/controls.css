@@ -39,7 +39,7 @@
 @media (max-width: 480px)
 {
   #markerList[data-mode="show"] ~ .mapContainer #controls,
-  #detail-view[data-mode="show"] ~ .mapContainer #controls,
+  #marker-detail[data-mode="show"] ~ .mapContainer #controls,
   #markerList[data-mode="show"] ~ .mapContainer .leaflet-control-container {
     display: none;
   }

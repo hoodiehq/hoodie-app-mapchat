@@ -4,8 +4,8 @@
   "type": "app",
   "dependencies": {
     "hoodie-app": "git://github.com/hoodiehq/hoodie-app.git",
-    "worker-users": "git://github.com/hoodiehq/worker-users.git",
-    "worker-users-sync": "git://github.com/gr2m/hoodie-worker-users-sync.git"
+    "hoodie-worker-users": "git://github.com/hoodiehq/worker-users.git",
+    "hoodie-worker-users-sync": "git://github.com/gr2m/hoodie-worker-users-sync.git"
   },
   "scripts": {
     "start": "node node_modules/hoodie-app/bin/start"

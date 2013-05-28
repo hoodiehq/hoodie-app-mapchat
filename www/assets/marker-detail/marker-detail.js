@@ -7,7 +7,7 @@ var DetailView = {
   },
 
   findElements : function() {
-    this.$el = $('#detail-view')
+    this.$el = $('#marker-detail')
     this.$marker = this.$el.find(' > article')
     this.$body = $('body')
   },

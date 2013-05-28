@@ -1,5 +1,5 @@
 html {
-  background: #202020 url(noise.png);
+  background: #202020 url(../images/noise.png);
 }
 #markerList {
   
@@ -121,7 +121,7 @@ html {
   float:right;
   margin-right: 3px;
   margin-top: 3px;
-  background: #DCDCDC url('../assets/marker-icon.png') no-repeat center;
+  background: #DCDCDC url('../images/marker-icon.png') no-repeat center;
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -147,7 +147,7 @@ html {
 }
 
 #markerList .content.active a.markerLocation {
-  background: #DCDCDC url('../assets/active-marker-icon.png') no-repeat center;
+  background: #DCDCDC url('../images/active-marker-icon.png') no-repeat center;
 }
 
 #markerList .content .messagesContainer ul{

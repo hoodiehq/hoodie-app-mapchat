@@ -35,7 +35,7 @@ var Map = (function(){
     // Basic Leaflet marker icon that other marker types will inherit from
     baseMarkerIcon = L.Icon.extend({
       options: {
-        shadowUrl: 'assets/marker-shadow.png',
+        shadowUrl: 'assets/images/marker-shadow.png',
         iconSize:     [25, 41],
         shadowSize:   [41, 41],
         iconAnchor:   [12, 40],
@@ -46,8 +46,8 @@ var Map = (function(){
     });
 
     // The two marker types: default (blue) and active (green)
-    defaultMarkerIcon = new baseMarkerIcon({iconUrl: 'assets/marker-icon.png'});
-    activeMarkerIcon = new baseMarkerIcon({iconUrl: 'assets/active-marker-icon.png'});
+    defaultMarkerIcon = new baseMarkerIcon({iconUrl: 'assets/images/marker-icon.png'});
+    activeMarkerIcon = new baseMarkerIcon({iconUrl: 'assets/images/active-marker-icon.png'});
 
     // Set up the Leaflet map
     $map = $('#map');
@@ -253,7 +253,7 @@ var Map = (function(){
   var activateMarker = function(id) {
     deactivateActiveMarker();
     if(markers[id]){
-      $(markers[id]._icon).attr('src', 'assets/active-marker-icon.png');
+      $(markers[id]._icon).attr('src', 'assets/images/active-marker-icon.png');
       activeMarker = markers[id];
     }
   };
@@ -261,7 +261,7 @@ var Map = (function(){
   // Turns the marker blue again
   var deactivateActiveMarker = function() {
     if(activeMarker){
-      $(activeMarker._icon).attr('src', 'assets/marker-icon.png');
+      $(activeMarker._icon).attr('src', 'assets/images/marker-icon.png');
       activeMarker = null;
     }
   };
