@@ -147,13 +147,15 @@
           <h3><span data-l10n-id="Name">Name</span>: <input type="text" name="name" placeholder="{{name}}" value="{{name}}" required></h3>
         </p>
         <p>
-          <button class="save btn btn-inverse btn-success"><i class="icon-ok icon-white"></i> <span data-l10n-id="Save">Save</span></a>
+          <button class="save btn btn-inverse btn-success">
+            <i class="icon-ok icon-white"></i>
+            <span data-l10n-id="Save">Save</span>
+          </button>
         </p>
-      </form>
 
-      <div class="close">
-        ×
-      </div>
+        <div class="close">
+          ×
+        </div>
       </form>
     </script>
 
@@ -178,7 +180,17 @@
           <header>
             <form class="message">
               <textarea name="messageBody" required data-l10n-id="NewMessage"></textarea>
-              <button class="btn btn-inverse"><i class="icon-ok icon-white"></i> <span data-l10n-id="Send">Send</span></button>
+              <button class="btn btn-inverse">
+                <i class="icon-ok icon-white"></i> 
+                <span data-l10n-id="Send">Send</span>
+              </button>
+
+              <select name="template">
+                <option data-l10n-id="Templates">Templates</option>
+                {{#Config.messageTemplates}}
+                  <option data-l10n-id="{{.}}">{{.}}</option>
+                {{/Config.messageTemplates}}
+              </select>
             </form>
           </header>
 
@@ -223,7 +235,7 @@
 
     <script id="login" type="text/html">
       <div class="content">
-        <h1>Hoodie MapChat</h1>
+        <h1>{{Config.appName}}</h1>
         <div class="alert alert-warn hide"></div>
         <form>
           <input type="text" name="username" data-l10n-id="usernameInput" class="username input-block-level" placeholder="username">

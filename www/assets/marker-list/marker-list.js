@@ -1,4 +1,4 @@
-(function($, hoodie, ich){
+(function($, hoodie, ich, Config){
 
   var $document = $(document);
   var $el, $content, $search, $body;
@@ -142,7 +142,7 @@
         data.data = {markers: markers};
       }
 
-      html = ich.markerList(data);
+      html = ich.markerList($.extend(data, {Config: Config}));
       $content.html( html )
       translate( $content )
     }.bind(this) )
@@ -204,4 +204,4 @@
     };
   }
 
-})(jQuery, hoodie, ich);
+})(jQuery, hoodie, ich, Config);

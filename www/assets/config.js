@@ -1,5 +1,9 @@
 var Config = {
-  app : {
-    name : 'Hoodie MapChat'
-  }
+  appName : 'Hoodie MapChat',
+  messageTemplates : [
+    // see local/data.in
+    "ILikeIt",
+    "SeeYouThere",
+    "WhatIsThisAbout"
+  ]
 }

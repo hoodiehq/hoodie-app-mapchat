@@ -1,4 +1,4 @@
-(function($, hoodie, ich){
+(function($, hoodie, ich, Config){
 
   var $document = $(document);
   var $container, $el, $username, $password, $alert;
@@ -29,7 +29,7 @@
   // render dialog and set $el
   // 
   function render() {
-    $el = $( ich.login() )
+    $el = $( ich.login( {Config: Config}) )
     $username = $el.find('input[name=username]')
     $password = $el.find('input[name=password]')
     $alert = $el.find('.alert-warn')
@@ -114,4 +114,4 @@
     }
   }
 
-})(jQuery, hoodie, ich);
+})(jQuery, hoodie, ich, Config);

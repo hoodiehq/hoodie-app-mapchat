@@ -1,4 +1,4 @@
-(function($, hoodie, ich){
+(function($, hoodie, ich, Config){
 
   var $document = $(document);
   var $window = $(window);
@@ -32,6 +32,7 @@
     $el.on('click', '.edit', edit)
     $el.on('click', '.destroy', destroy)
     $el.on('click', '.expand', show)
+    $el.on('change', 'select[name=template]', setTemplate)
     $el.on('focus', 'textarea', showForm)
     $el.on('submit', '.marker', save)
     $el.on('submit', '.message', saveMessage)
@@ -184,7 +185,7 @@
       // is it mine?
       marker.belongsToMe = marker.createdBy === hoodie.account.ownerHash
 
-      var html = ich.show(marker);
+      var html = ich.show($.extend(marker, {Config: Config}));
       $el.html( html )
       translate()
     }.bind(this))
@@ -244,10 +245,31 @@
 
   function showEditView(marker){
     currentMarker = marker;
-    var html = ich.edit(marker);
+    var html = ich.edit($.extend(marker, {Config: Config}));
     $el.html( html )
     translate()
     $body.animate({scrollTop: 9999}, 300)
+  }
+
+  //
+  //
+  //
+  function setTemplate(event) {
+    var $select   = $el.find('select[name=template]')
+    var $textarea = $el.find('textarea[name=messageBody]')
+
+    var template = $select.val()
+    var text = $textarea.val()
+
+    // reset
+    $select.val('')
+
+    if (text) {
+      text += " " + template
+    } else {
+      text = template
+    }
+    $textarea.val( text )
   }
 
   //
@@ -354,4 +376,4 @@
       return object.type === 'message' && object.parent == "marker/" + marker.id
     };
   }
-})(jQuery, hoodie, ich);
+})(jQuery, hoodie, ich, Config);
