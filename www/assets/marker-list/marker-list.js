@@ -36,6 +36,7 @@
     $document.on('app:resize', resize)
 
     hoodie.store.on('change clear', renderMarkers )
+    hoodie.account.on('signout', hide )
     $('.toggle-marker-list').on('click', handleToggleMarkeListClick);
   }
 

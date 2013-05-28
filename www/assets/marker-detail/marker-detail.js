@@ -40,7 +40,8 @@
     $document.on('marker:show', show)
     $document.on('marker:activate', show)
 
-    hoodie.store.on('add:marker', editNewMarker )
+    hoodie.store.on('add:marker', handleNewMarker )
+    hoodie.account.on('signout', hide )
   }
 
   //
@@ -108,18 +109,18 @@
     if (! markerId) markerId = currentMarker.id;
 
     // if already expanded, close it.
-    if ( $window.scrollTop() > 100 ) {
+    if ( $window.scrollTop() > 110 ) {
       hide()
       return
     }
 
-    var maxScroll = $window.height() - 100
+    var maxScroll = $window.height() - 110
     var scrollTop = $window.scrollTop()
     var diff = maxScroll - scrollTop
     if ( scrollTop < maxScroll) {
 
       hoodie.store.find('marker', markerId).then( function(marker) {
-        $.event.trigger('map:center', [marker, { y: diff }])
+        $.event.trigger('map:center', [marker, { y: diff / 2 }])
       })
 
       $body.animate({scrollTop: maxScroll}, 300)
@@ -216,7 +217,12 @@
   // Triggered when this client adds a new marker
   //
   //
-  function editNewMarker(marker){
+  function handleNewMarker(marker, options){
+
+    // ignore remote marker
+    if (options.remote) {
+      return
+    }
     if(marker.createdByName === hoodie.account.username){
       setMode('show')
       showEditView(marker)

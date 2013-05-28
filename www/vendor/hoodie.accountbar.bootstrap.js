@@ -104,9 +104,7 @@ Hoodie.extend('hoodstrap', (function() {
               return;
             }
           }
-          window.hoodie.account.signOut().done(function(){
-            window.location.reload();
-          });
+          window.hoodie.account.signOut();
           break
         case 'destroy':
           if( window.confirm("you sure?") ) {
