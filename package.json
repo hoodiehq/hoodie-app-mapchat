@@ -11,12 +11,6 @@
     "start": "node node_modules/hoodie-app/bin/start"
   },
   "subdomain": "hoodie-mapchat",
-  "domains": [
-    "admin.hoodie-mapchat.jit.su",
-    "couch.hoodie-mapchat.jit.su",
-    "api.hoodie-mapchat.jit.su",
-    "admin.api.hoodie-mapchat.jit.su"
-  ],
   "engines": {
     "node": "0.8.x"
   }
