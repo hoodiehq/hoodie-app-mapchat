@@ -8,7 +8,6 @@
   // on app startup.
   //
   function init() {
-    console.log("list init: ");
     findElements()
     bindToEvents()
     renderMarkers()
@@ -26,14 +25,34 @@
   }
 
   //
-  // bind to outsite events
+  // bind to outside events
   //
   function bindToEvents() {
     $el.on('click', '.list li', handleMarkerSelect)
+    $el.on('input change', $search, handleSearch)
 
     $document.on('marker:activate', handleMarkerActivate)
     hoodie.store.on('change clear', renderMarkers )
     $('.toggle-marke-list').on('click', handleToggleMarkeListClick);
+  }
+
+  //
+  //
+  //
+  function handleSearch(event) {
+    var searchTerm = $(event.target).val().toLowerCase();
+    if(searchTerm){
+      $('.markerListItem').each(function(index, item){
+        var name = $(item).find('.name').text();
+        if(name.toLowerCase().indexOf(searchTerm) == -1){
+          $(item).addClass('hidden')
+        } else {
+          $(item).removeClass('hidden')
+        }
+      });
+    } else {
+      $('.markerListItem').removeClass('hidden')
+    }
   }
 
   //

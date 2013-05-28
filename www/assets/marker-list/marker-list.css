@@ -2,7 +2,7 @@ html {
   background: #202020 url(../images/noise.png);
 }
 #markerList {
-  
+
   position: fixed;
   left:0;
   top:0;
@@ -35,12 +35,15 @@ html {
 #markerList header input[type=search] {
   width: 200px;
   margin-left: 60px;
-  -moz-box-sizing: border-box; 
+  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  box-sizing: border-box; 
+  box-sizing: border-box;
   height: 30px;
 }
 
+#markerList .markerListItem.hidden{
+  display: none;
+}
 
 #markerList .content {
   color: #EEE;
