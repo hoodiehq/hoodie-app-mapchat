@@ -140,6 +140,15 @@ html {
   content: attr(data-messages);
   display: block;
   margin: 9px 0 0 16px;
+  background: #FFF;
+  border-radius: 50%;
+  width: 19px;
+  height: 19px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 18px;
+  font-weight: 800;
+  color: #000;
 }
 
 #markerList .content li.active {
@@ -150,7 +159,7 @@ html {
   color: #333;
 }
 
-#markerList .content.active a.markerLocation {
+#markerList .content .active a.markerLocation {
   background: #DCDCDC url('../images/active-marker-icon.png') no-repeat center;
 }
 
