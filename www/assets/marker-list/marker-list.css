@@ -48,6 +48,7 @@ html {
 #markerList .content {
   color: #EEE;
   margin-top: -8px;
+  overflow: scroll;
 }
 
 #markerList .content ul{
@@ -170,7 +171,7 @@ html {
   margin-bottom: 0;
 }
 
-.toggle-marke-list {
+.toggle-marker-list {
   position: fixed;
   top: 10px;
   left: 10px;

@@ -1,10 +1,16 @@
-* { 
-  -moz-box-sizing: border-box; 
+* {
+  -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-  box-sizing: border-box; 
-  
+  box-sizing: border-box;
+
   /* This gets rid of the ugly orange android focus rects*/
   -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+.group:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 a{

@@ -11,6 +11,7 @@
     findElements()
     bindToEvents()
     renderMarkers()
+    resize()
   };
   $document.on('app:ready', init)
 
@@ -32,8 +33,21 @@
     $el.on('input change', $search, handleSearch)
 
     $document.on('marker:activate', handleMarkerActivate)
+    $document.on('app:resize', resize)
+
     hoodie.store.on('change clear', renderMarkers )
-    $('.toggle-marke-list').on('click', handleToggleMarkeListClick);
+    $('.toggle-marker-list').on('click', handleToggleMarkeListClick);
+  }
+
+  //
+  //
+  //
+  function resize() {
+    var ww = $(window).width()
+    var wh = $(window).height()
+    console.log("resize: ",ww, wh);
+    var headerHeight = $el.find('header').outerHeight();
+    $el.find('.content').height(wh-headerHeight);
   }
 
   //
@@ -138,7 +152,6 @@
   function show() {
     $el.attr('data-mode', 'show')
     $el.data('mode', 'show')
-    subscribeToScroll()
   }
 
   //
@@ -147,7 +160,6 @@
   function hide() {
     $el.attr('data-mode', 'hide')
     $el.data('mode', 'hide')
-    unsubscribeFromScroll()
   }
 
   //
@@ -158,42 +170,6 @@
       show()
     } else {
       hide()
-    }
-  }
-
-
-  //
-  //
-  //
-  function subscribeToScroll() {
-    $(window).on('scroll', handleScroll)
-  }
-  //
-  //
-  //
-  function unsubscribeFromScroll() {
-    $(window).unbind('scroll', handleScroll)
-    window.clearTimeout( _scrollEndTimeout )
-  }
-
-  //
-  //
-  //
-  var _scrollEndTimeout = null;
-  function handleScroll(event) {
-    window.clearTimeout( _scrollEndTimeout )
-    _scrollEndTimeout = window.setTimeout( checkScrollPosition, 150 )
-    $body.stop(true, true)
-  }
-  //
-  //
-  //
-  function checkScrollPosition () {
-    var scrollLeft = $(window).scrollLeft()
-    if (scrollLeft > 70) {
-      hide()
-    } else {
-      $body.animate({scrollLeft: 0}, 500)
     }
   }
 
