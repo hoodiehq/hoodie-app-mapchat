@@ -205,7 +205,6 @@ var DetailView = {
     if (scrollTop < 80) {
       $('body').animate({scrollTop: 0}, 200, this.hide)
     }
-  
   },
 
   // private
