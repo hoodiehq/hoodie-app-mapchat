@@ -248,7 +248,6 @@
     deactivateActiveMarker();
     if(markers[id]){
       $(markers[id]._icon).attr('src', 'assets/images/active-marker-icon.png');
-      debugger
       activeMarker = markers[id];
     }
   };
