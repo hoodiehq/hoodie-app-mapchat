@@ -45,6 +45,9 @@
   margin: 0;
 }
 
+#marker-detail .messages {
+  margin: 10px 0 0;
+}
 #marker-detail textarea {
   display: block;
   width: 100%;

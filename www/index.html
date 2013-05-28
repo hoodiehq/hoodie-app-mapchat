@@ -26,7 +26,7 @@
     <!-- list of markers -->
     <div id="markerList" data-mode="hide">
       <header>
-        <input type="search" placeholder="Search">
+        <input type="search" placeholder="Search" data-l10n-id="searchInput">
       </header>
       <div class="content"></div>
     </div>
@@ -67,7 +67,7 @@
                 <li>
                   <a href="#" data-hoodie-action="signout">
                     <i class="icon-off"></i>
-                    Sign out
+                    <span data-l10n-id="SignOut">Sign out</span>
                   </a>
                 </li>
 
@@ -144,10 +144,10 @@
     <script id="edit" type="text/html">
       <form data-id="{{id}}" class="marker">
         <p>
-          <h3>Name: <input type="text" name="name" placeholder="{{name}}" value="{{name}}" required></h3>
+          <h3><span data-l10n-id="Name">Name</span>: <input type="text" name="name" placeholder="{{name}}" value="{{name}}" required></h3>
         </p>
         <p>
-          <button class="save btn btn-inverse btn-success"><i class="icon-ok icon-white"></i> save marker</a>
+          <button class="save btn btn-inverse btn-success"><i class="icon-ok icon-white"></i> <span data-l10n-id="Save">Save</span></a>
         </p>
       </form>
 
@@ -161,15 +161,15 @@
       <article data-id="{{id}}" class="marker">
         <header>
           <h3>
-            Title: <span>{{name}}</span>
+            <span>{{name}}</span>
           </h3>
           <p>
             <span class="owner"><i class="icon-user"></i> {{createdByName}}</span>
             | <span class="date"><i class="icon-time"></i> {{ createdTimeAgo }}</span>
-            | <span class="comment"><i class="icon-comment"></i> {{options.messages.length}} Messages.</span>
+            | <span class="comment"><i class="icon-comment"></i> <span data-l10n-id="Messages" data-l10n-args='{ "n":{{options.messages.length}} }'>{{n}} Messages</span>.</span>
             {{#belongsToMe}}
-            | <a href="#" class="edit"><i class="icon-pencil"></i> edit</a>
-            | <a href="#" class="destroy"><i class="icon-trash"></i> destroy</a>
+            | <a href="#" class="edit"><i class="icon-pencil"></i> <span data-l10n-id="edit">edit</span></a>
+            | <a href="#" class="destroy"><i class="icon-trash"></i> <span data-l10n-id="delete">delete</span></a>
             {{/belongsToMe}}
           </p>
         </header>
@@ -177,8 +177,7 @@
         <div class="messages">
           <header>
             <form class="message">
-              <h4>New message</h4>
-              <textarea name="messageBody" required></textarea>
+              <textarea name="messageBody" required data-l10n-id="NewMessage"></textarea>
               <button class="btn btn-inverse"><i class="icon-ok icon-white"></i> Send message</button>
             </form>
           </header>
@@ -227,9 +226,9 @@
         <h1>Hoodie MapChat</h1>
         <div class="alert alert-warn hide"></div>
         <form>
-          <input type="text" name="username" data-l10n-id="usernameInput" class="username input-block-level" placeholder="Username">
-          <input type="password" name="password" data-l10n-id="passwordInput" class="password input-block-level" placeholder="Password">
-          <button class="signIn btn btn-large btn-inverse" data-l10n-id="signIn">Sign in</button>
+          <input type="text" name="username" data-l10n-id="usernameInput" class="username input-block-level" placeholder="username">
+          <input type="password" name="password" data-l10n-id="passwordInput" class="password input-block-level" placeholder="password">
+          <button class="signIn btn btn-large btn-inverse" data-l10n-id="SignIn">Sign in</button>
         </form>
       </div>
     </script>
@@ -252,6 +251,7 @@
     <script src="vendor/l10n.js"></script>
 
     <!-- MapChat -->
+    <script src="assets/locale/jquery.timeago.de.js"></script>
     <script src="assets/config.js"></script>
     <script src="assets/app.js"></script>
     <script src="assets/dialogs/login.js"></script>

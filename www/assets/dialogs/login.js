@@ -33,6 +33,14 @@
     $username = $el.find('input[name=username]')
     $password = $el.find('input[name=password]')
     $alert = $el.find('.alert-warn')
+    translate()
+  }
+
+  // 
+  // 
+  // 
+  function translate() {
+    document.webL10n.translate($el[0])
   }
 
   // 

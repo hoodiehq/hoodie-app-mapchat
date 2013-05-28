@@ -32,6 +32,7 @@
     $el.on('click', '.edit', edit)
     $el.on('click', '.destroy', destroy)
     $el.on('click', '.expand', show)
+    $el.on('focus', 'textarea', showForm)
     $el.on('submit', '.marker', save)
     $el.on('submit', '.message', saveMessage)
 
@@ -57,12 +58,23 @@
        return
      }
 
-     if ( $window.scrollTop() < 100) {
-       $body.animate({scrollTop: 100}, 300)
+     if ( $window.scrollTop() < 110) {
+       $body.animate({scrollTop: 110}, 300)
      }
 
      hoodie.store.find('marker', markerId)
      .then( render );
+  }
+
+  // 
+  // 
+  // 
+  function showForm () {
+    var currentScrollTop = $window.scrollTop()
+    if (currentScrollTop < 200) {
+      $body.animate({scrollTop: 200}, 300)
+      $.event.trigger('map:center', [currentMarker, { y: currentScrollTop - 200 }])
+    }
   }
 
   //
@@ -79,8 +91,8 @@
   function preview(markerId) {
     if (! markerId) markerId = currentMarker.id;
 
-    if ( $window.scrollTop() < 100) {
-      $body.animate({scrollTop: 100}, 300)
+    if ( $window.scrollTop() < 110) {
+      $body.animate({scrollTop: 110}, 300)
     }
 
     hoodie.store.find('marker', markerId)
@@ -162,6 +174,9 @@
         marker = currentMarker
       }
 
+      // defaults
+      marker.name = marker.name || t("noName")
+
       // add time ago
       marker.createdTimeAgo = $.timeago(marker.createdAt)
 
@@ -170,8 +185,17 @@
 
       var html = ich.show(marker);
       $el.html( html )
-      $el.find('.date').timeago()
+      translate()
     }.bind(this))
+  }
+
+  // 
+  // 
+  // 
+  function translate ( $tree ) {
+    $tree || ( $tree = $el)
+    $tree.find('.date').timeago()
+    document.webL10n.translate($tree[0])
   }
 
   //
@@ -216,6 +240,7 @@
     currentMarker = marker;
     var html = ich.edit(marker);
     $el.html( html )
+    translate()
     $body.animate({scrollTop: 9999}, 300)
   }
 

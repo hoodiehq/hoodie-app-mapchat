@@ -143,7 +143,16 @@
 
       html = ich.markerList(data);
       $content.html( html )
+      translate( $content )
     }.bind(this) )
+  }
+
+  // 
+  // 
+  // 
+  function translate ( $tree ) {
+    $tree || ( $tree = $el)
+    document.webL10n.translate($tree[0])
   }
 
   //

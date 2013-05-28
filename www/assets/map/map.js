@@ -263,7 +263,7 @@
   // Adds a new marker to the store
   var addMarker = function(event) {
     var markerData = {
-      'name': 'new Marker',
+      'name': t('NewMarker'),
       'lat': event.latlng.lat,
       'lng': event.latlng.lng,
       'createdByName': hoodie.account.username
