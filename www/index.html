@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js" data-hoodie-account-status="loading">
+<html lang="de" class="no-js" data-hoodie-account-status="loading">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="assets/marker-list/marker-list.css">
     <link rel="stylesheet" href="assets/marker-detail/marker-detail.css">
     <link rel="stylesheet" href="assets/app.css">
+
+    <link rel="prefetch" type="application/l10n" href="assets/locale/data.ini" />
   </head>
 
 
@@ -225,9 +227,9 @@
         <h1>Hoodie MapChat</h1>
         <div class="alert alert-warn hide"></div>
         <form>
-          <input type="text" name="username" class="username input-block-level" placeholder="Username">
-          <input type="password" name="password" class="password input-block-level" placeholder="Password">
-          <button class="signIn btn btn-large btn-inverse">Sign in</button>
+          <input type="text" name="username" data-l10n-id="usernameInput" class="username input-block-level" placeholder="Username">
+          <input type="password" name="password" data-l10n-id="passwordInput" class="password input-block-level" placeholder="Password">
+          <button class="signIn btn btn-large btn-inverse" data-l10n-id="signIn">Sign in</button>
         </form>
       </div>
     </script>
@@ -247,6 +249,7 @@
     <script src="vendor/fastclick.js"></script>
     <script src="vendor/date-utils.min.js"></script>
     <script src="vendor/jquery.timeago.js"></script>
+    <script src="vendor/l10n.js"></script>
 
     <!-- MapChat -->
     <script src="assets/config.js"></script>
