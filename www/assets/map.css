@@ -11,11 +11,8 @@
   outline: none;
 }
 
-.leaflet-touch .leaflet-control-zoom a {
-  width: 36px;
-  height: 36px;
-  padding: 3px;
-  line-height: 36px;
+.leaflet-touch .leaflet-control-zoom {
+  display: none;
 }
 
 .leaflet-container a.leaflet-popup-close-button {
@@ -65,14 +62,23 @@
   height: 19px;
 }
 
+.leaflet-container .leaflet-control-attribution {
+  background: transparent;
+  box-shadow: none;
+  text-shadow: 0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;
+  font-weight: bold;
+}
+
 /*
 ------------------ MAP
 */
 
 #map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
 .mapContainer {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  position: absolute; top: 0; left: 0; width: 100%; bottom: 0;
   transition: bottom .2s, left .2s;
+  min-width: 320px;
+  background: #B4D0D0;
 }
 .layer-select {
   position: absolute;

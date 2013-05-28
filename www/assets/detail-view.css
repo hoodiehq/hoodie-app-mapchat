@@ -1,33 +1,27 @@
 #detail-view {
   position: absolute;
   left: 0; 
-  right: 0; 
-  top: 30%;
-  min-height: 70%;
+  right: 0;
   background: #FFF;
+
   z-index: 200;
   padding: 10px;
+  top: 100%;
 
-  overflow: hidden;
-  transition: height .2s, left .2s;
+  transition: left .2s;
 }
 #detail-view:before {
   content: '';
   display: block;
   position: absolute;
-  top: -10px; 
+  top: -20px; 
   left: 0; 
   right: 0; 
-  height: 10px;
-  background: rgba(255,255,255,.5)
+  bottom: 100%;
+  background: rgba(255,255,255,.5);
 }
-#detail-view.preview,
-#detail-view.preview {
-  display: block;
-  height: 100px;
-  min-height: 100px;
-  top: auto;
-  bottom: 0;
+#detail-view[data-mode="hide"] {
+  display: none;
 }
 
 #detail-view .close {
@@ -63,20 +57,6 @@
   height: 1.6em;
 }
 
-
-
-#detail-view ~ .mapContainer {
-  bottom: 70%;
-}
-#detail-view.preview ~ .mapContainer {
-  bottom: 100px;
-}
-#detail-view.hide ~ .mapContainer {
-  bottom: 0;
-}
-#markerList ~ #detail-view {
+#markerList[data-mode="show"] ~ #detail-view {
   left: 280px;
-}
-#markerList.hide ~ #detail-view {
-  left: 0;
 }

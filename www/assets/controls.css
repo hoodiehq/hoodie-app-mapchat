@@ -2,7 +2,7 @@
   font-weight: bold;
 }
 #controls .hoodie-accountbar {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 10px;
   z-index: 100;
@@ -22,14 +22,6 @@
   border-radius: 4px;
 }
 
-#controls .toggle-marke-list {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 100;
-  transition: top .2s linear;
-}
-
 #controls .geolocation i.icon-refresh,
 #controls .geolocation.loading i.icon-screenshot{
   display: none;
@@ -44,21 +36,11 @@
   -webkit-animation: rotating 1.3s linear infinite;
 }
 
-
-
-@media only screen and (max-width: 1279px) {
-  body.list #controls, body.list .leaflet-control-container,
-  body.detail #controls, body.detail .leaflet-control-container{
-    display: none;
-  }
-}
-
 @media (max-width: 480px)
 {
-  #markerList ~ .mapContainer #controls .hoodie-accountbar {
+  #markerList[data-mode="show"] ~ .mapContainer #controls,
+  #detail-view[data-mode="show"] ~ .mapContainer #controls,
+  #markerList[data-mode="show"] ~ .mapContainer .leaflet-control-container {
     display: none;
-  }
-  #markerList.hide ~ .mapContainer #controls .hoodie-accountbar {
-    display: block;
   }
 }

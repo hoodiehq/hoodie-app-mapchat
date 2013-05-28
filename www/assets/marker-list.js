@@ -14,6 +14,8 @@ var MarkerList = {
 
   findElements : function() {
     this.$content = this.$el.find('.content')
+    this.$search = this.$el.find('input[type=search]')
+    this.$body = $('body')
   },
 
   bindToEvents : function() {
@@ -21,6 +23,7 @@ var MarkerList = {
     
     $(document).on('marker:activate', this.handleMarkerActivate)
     hoodie.store.on('change clear', this.renderMarkers )
+    $('.toggle-marke-list').on('click', this.handleToggleMarkeListClick);
   },
 
   handleMarkerSelect : function(event) {
@@ -30,6 +33,12 @@ var MarkerList = {
     var id = $marker.data('id')
     $.event.trigger('marker:activate', id )
   }, 
+
+  handleToggleMarkeListClick : function(event) {
+    event.preventDefault()
+    event.stopPropagation()
+    this.toggle()
+  },
 
   handleMarkerActivate : function(event, id) {
     var $items = this.$el.find('[data-id]')
@@ -77,22 +86,49 @@ var MarkerList = {
   },
 
   show : function() {
-    this.$el.removeClass('hide')
-    $.event.trigger('uichange')
+    this.$el.attr('data-mode', 'show')
+    this.$el.data('mode', 'show')
+    this.subscribeToScroll()
   },
 
   hide : function() {
-    this.$el.addClass('hide')
-    $.event.trigger('uichange')
+    this.$el.attr('data-mode', 'hide')
+    this.$el.data('mode', 'hide')
+    this.unsubscribeFromScroll()
   },
 
   toggle : function() {
-    if ( this.$el.is('.hide') ) {
+    if ( this.$el.data('mode') === 'hide' ) {
       this.show()
     } else {
       this.hide()
     }
   },
+
+
+  subscribeToScroll : function() {
+    $(window).on('scroll', this.handleScroll)
+  },
+  unsubscribeFromScroll : function() {
+    $(window).unbind('scroll', this.handleScroll)
+    window.clearTimeout( this._scrollEndTimeout )
+  },
+
+  _scrollEndTimeout : null,
+  handleScroll : function(event) {
+    window.clearTimeout( this._scrollEndTimeout )
+    this._scrollEndTimeout = window.setTimeout( this.checkScrollPosition, 150 )
+    this.$body.stop(true, true)
+  },
+  checkScrollPosition : function () {
+    var scrollLeft = $(window).scrollLeft()
+    if (scrollLeft > 70) {
+      this.hide()
+    } else {
+      this.$body.animate({scrollLeft: 0}, 500)
+    }
+  },
+
 
   // private
   _getReadableTimestamp : function( datetime) {
@@ -114,3 +150,6 @@ MarkerList.renderMarkers = bind(MarkerList.renderMarkers, MarkerList)
 MarkerList.addMessagesToMarkers = bind(MarkerList.addMessagesToMarkers, MarkerList)
 MarkerList.handleMarkerSelect = bind(MarkerList.handleMarkerSelect, MarkerList)
 MarkerList.handleMarkerActivate = bind(MarkerList.handleMarkerActivate, MarkerList)
+MarkerList.handleScroll = bind(MarkerList.handleScroll, MarkerList)
+MarkerList.checkScrollPosition = bind(MarkerList.checkScrollPosition, MarkerList)
+MarkerList.handleToggleMarkeListClick = bind(MarkerList.handleToggleMarkeListClick, MarkerList)

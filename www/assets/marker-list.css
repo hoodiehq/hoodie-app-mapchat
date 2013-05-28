@@ -1,39 +1,40 @@
+html {
+  background: #202020 url(noise.png);
+}
 #markerList {
-  position: absolute;
+  
+  position: fixed;
   left:0;
   top:0;
   bottom: 0;
   width: 280px;
-
-  background: #202020 url(noise.png);
-  overflow-x: hidden;
-
   transition: left .2s linear;
+  overflow: hidden;
 }
 #markerList:after {
   content: "";
   display: block;
   position: absolute;
-  top: 0;
-  bottom: 20px;
+  top: -20px;
+  bottom: -20px;
+  right: -20px;
   left: 100%;
-  width: 10px;
 
-  -webkit-box-shadow: 0 -2px 3px 2px rgba(0,0,0,.7);
-  -moz-box-shadow: 0 -2px 3px 2px rgba(0,0,0,.7);
+  -webkit-box-shadow:  0 -2px 3px 2px rgba(0,0,0,.7);
+  -moz-box-shadow:  0 -2px 3px 2px rgba(0,0,0,.7);
   box-shadow: 0 -2px 3px 2px rgba(0,0,0,.7);
 }
 
-#markerList.hide {
-  display: block;
-  left: -320px;
+#markerList[data-mode="hide"] {
+  /*left: -280px;*/
 }
 
 #markerList header {
   margin: 10px;
 }
 #markerList header input[type=search] {
-  width: 240px;
+  width: 200px;
+  margin-left: 60px;
   -moz-box-sizing: border-box; 
   -webkit-box-sizing: border-box;
   box-sizing: border-box; 
@@ -43,6 +44,7 @@
 
 #markerList .content {
   color: #EEE;
+  margin-top: -8px;
 }
 
 #markerList .content ul{
@@ -165,13 +167,17 @@
   margin-bottom: 0;
 }
 
+.toggle-marke-list {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+}
+
 /* toggle map */
 .mapContainer {
   transition: left .2s linear;
 }
-#markerList ~ .mapContainer {
+#markerList[data-mode="show"] ~ .mapContainer {
   left: 280px;
-}
-#markerList.hide ~ .mapContainer {
-  left: 0;
 }

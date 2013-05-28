@@ -22,28 +22,28 @@
   <body>
 
     <!-- list of markers -->
-    <div id="markerList" class="hide">
+    <div id="markerList" data-mode="hide">
       <header>
         <input type="search" placeholder="Search">
       </header>
       <div class="content"></div>
     </div>
+    <div class="toggle-marke-list">
+      <button class="btn btn-medium btn-inverse">
+        <i class="icon-list icon-white"></i>
+      </button>
+    </div>
 
     <!-- detail view -->
-    <div id="detail-view" class="hide"></div>
+    <div id="detail-view" data-mode="hide"></div>
 
     <div class="mapContainer">
+
       <!-- Leaflet Map Container -->
       <div id="map"></div>
 
       <!-- controls -->
       <div id="controls">
-        <div class="toggle-marke-list">
-          <button class="btn btn-medium btn-inverse">
-            <i class="icon-list icon-white"></i>
-          </button>
-        </div>
-
         <div class="hoodie-accountbar">
           <div class="geolocation">
             <button class="geolocate btn btn-medium btn-inverse" data-toggle="dropdown">
@@ -155,39 +155,22 @@
       </form>
     </script>
 
-    <script id="preview" type="text/html">
+    <script id="show" type="text/html">
       <article data-id="{{id}}" class="marker">
-        <h3>Title: {{name}}</h3>
-        <p>
-          <span class="owner"><i class="icon-user"></i> {{createdByName}}</span> 
-          | <span class="date"><i class="icon-time"></i> {{ createdTimeAgo }}</span>
-          | <span class="comment"><i class="icon-comment"></i> <a href="#" class="expand">{{options.messages.length}} Messages.</a></span>
-          {{#belongsToMe}}
-          | <a href="#" class="edit"><i class="icon-pencil"></i> edit</a>
-          | <a href="#" class="destroy"><i class="icon-trash"></i> delete</a>
-          {{/belongsToMe}}
-        </p>
-
-        <div class="close">
-          ×
-        </div>
-      </article>
-    </script>
-
-    <script id="detail" type="text/html">
-    <article data-id="{{id}}" class="marker">
-        <h3>
-          Title: {{name}}
-        </h3>
-        <p>
-          <span class="owner"><i class="icon-user"></i> {{createdByName}}</span> 
-          | <span class="date"><i class="icon-time"></i> {{ createdTimeAgo }}</span>
-          | <span class="comment"><i class="icon-comment"></i> {{options.messages.length}} Messages.</span>
-          {{#belongsToMe}}
-          | <a href="#" class="edit"><i class="icon-pencil"></i> edit</a>
-          | <a href="#" class="destroy"><i class="icon-trash"></i> destroy</a>
-          {{/belongsToMe}}
-        </p>
+        <header>
+          <h3>
+            Title: {{name}}
+          </h3>
+          <p>
+            <span class="owner"><i class="icon-user"></i> {{createdByName}}</span> 
+            | <span class="date"><i class="icon-time"></i> {{ createdTimeAgo }}</span>
+            | <span class="comment"><i class="icon-comment"></i> {{options.messages.length}} Messages.</span>
+            {{#belongsToMe}}
+            | <a href="#" class="edit"><i class="icon-pencil"></i> edit</a>
+            | <a href="#" class="destroy"><i class="icon-trash"></i> destroy</a>
+            {{/belongsToMe}}
+          </p>
+        </header>
 
         <div class="messages">
           <header>

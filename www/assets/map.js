@@ -75,18 +75,11 @@ var Map = (function(){
     $map.hammer().on('hold', onMapHold);
 
     $(document).on('map:geolocate', geolocate)
+    $(document).on('map:center', function (event, marker) {
+      centerMapOnCoordinates(marker)
+    })
     $(document).on('marker:activate', onMarkerActivate)
     $(document).on('marker:deactivate', onMarkerDeactivate)
-    $(document).on('uichange', function() {
-      window.setTimeout(function() {
-        if (! activeMarker) {
-          return
-        }
-        console.log('center!')
-        centerMapOnCoordinates(activeMarker._latlng.lat, activeMarker._latlng.lng)
-        updateMap()
-      }, 200)
-    })
 
     // Window resize
     $(window).on('resize', onResize);
@@ -112,10 +105,9 @@ var Map = (function(){
       return
     }
 
-    $.event.trigger('marker:show')
-
     activateMarker(properties.id);
-    centerMapOnCoordinates(properties.lat, properties.lng);
+    centerMapOnCoordinates(properties);
+    $.event.trigger('marker:edit', properties.id)
     onResize();
   };
 
@@ -206,7 +198,7 @@ var Map = (function(){
     hoodie.store.find('marker', markerId)
     .then( function(marker) {
 
-      // map.panTo(marker);
+      centerMapOnCoordinates(marker)
       activateMarker(marker.id);
 
       var newState;
@@ -277,7 +269,7 @@ var Map = (function(){
   // Adds a new marker to the store
   var addMarker = function(event) {
     var markerData = {
-      'name': '',
+      'name': 'new Marker',
       'lat': event.latlng.lat,
       'lng': event.latlng.lng,
       'createdByName': hoodie.account.username
@@ -437,13 +429,36 @@ var Map = (function(){
     if(map) map.invalidateSize();
   };
 
-  var centerMapOnCoordinates = function(lat, lng) {
-   var latlng = new L.LatLng(lat, lng);
-   map.panTo(latlng);
+  var centerMapOnCoordinates = function(properities) {
+    var lat = properities.lat, 
+        lng = properities.lng
+
+    console.log('centerMapOnCoordinates')
+    
+    // map might be out screen, but we want to center
+    // on visible part, so:
+    // 1. turn lat/lng into pixels
+    var point = map.project([lat, lng])
+    // 2. calculate offsets & update pixel point
+    var offsetLeft = $('.mapContainer').offset().left
+    var offsetBottom = $(window).scrollTop()
+    point.x += offsetLeft / 2
+    point.y -= offsetBottom / 2
+    // 3. turn pixel point back to lat/lng
+    var latlng = map.unproject(point)
+
+    // \o/
+    map.panTo(latlng);
   };
 
   // Displays a marker on the map
   var addMarkerToMap = function(properties) {
+
+    // sanity check
+    if (! properties.lat || ! properties.lng) {
+      return
+    }
+
     var latlng = [properties.lat, properties.lng];
     var messages = 0;
     if(markers[properties.id]){

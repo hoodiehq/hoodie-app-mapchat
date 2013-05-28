@@ -13,7 +13,6 @@ var Controls = {
   },
 
   bindToEvents : function() {
-    this.$el.on('click', '.toggle-marke-list', this.handleToggleMarkeListClick);
     this.$el.on('click','.geolocate' , this.handleGeolocateClick);
     this.$el.on('click','.bookmark' , this.handleBookmarkSelect);
 
@@ -31,11 +30,6 @@ var Controls = {
     if (! this.isInitialized ) this.init();
     this.$el.addClass('hide')
     this.$leafletControls.hide()
-  },
-
-  handleToggleMarkeListClick : function(event) {
-    event.preventDefault()
-    MarkerList.toggle()
   },
 
   handleGeolocateClick : function(event) {
