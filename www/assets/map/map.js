@@ -127,7 +127,7 @@
   // Updates views when a marker is removed from Hoodie
   var onRemoveMarkerFromStore = function(properties) {
     map.removeLayer( markers[properties.id] );
-    if(activeMarker.options.couchId == properties.id){
+    if(activeMarker && activeMarker.options.couchId == properties.id){
       activeMarker = null;
     }
   };
