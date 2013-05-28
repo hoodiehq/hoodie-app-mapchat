@@ -1,58 +1,78 @@
-var Controls = {
-  isInitialized : false,
-  init : function() {
-    this.$el = $('#controls')
+(function($, hoodie){
 
-    this.findElements()
-    this.bindToEvents()
-  },
+  var $document = $(document);
+  var $el, $leafletControls, $geolocateButton;
 
-  findElements : function() {
-    this.$leafletControls = $('.leaflet-control-container')
-    this.$geolocateButton = this.$el.find('.geolocation')
-  },
+  // 
+  // init gets run when app:ready event gets fired
+  // on app startup.
+  // 
+  function init() {
+    findElements()
+    bindToEvents()
+  };
+  $document.on('app:ready', init)
 
-  bindToEvents : function() {
-    this.$el.on('click','.geolocate' , this.handleGeolocateClick);
-    this.$el.on('click','.bookmark' , this.handleBookmarkSelect);
-
-    $(document).on("map:geolocated", this.handleGeolocateDone)
-    $(document).on("map:geolocation:error", this.handleGeolocateDone)
-  },
-
-  show : function() {
-    if (! this.isInitialized ) this.init();
-    this.$el.removeClass('hide')
-    this.$leafletControls.show()
-  },
-
-  hide : function() {
-    if (! this.isInitialized ) this.init();
-    this.$el.addClass('hide')
-    this.$leafletControls.hide()
-  },
-
-  handleGeolocateClick : function(event) {
-    event.preventDefault()
-    this.$geolocateButton.addClass('loading');
-    $.event.trigger("map:geolocate")
-  },
-
-  handleGeolocateDone : function(event) {
-    this.$geolocateButton.removeClass('loading');
-  },
-
-  handleBookmarkSelect : function(event) {
-    event.preventDefault()
-    var $el = $(event.target)
-    console.log($el.text(), $el.data(), $el.data('zoom'))
-    Map.setView($el.data(), $el.data('zoom'))
+  // 
+  // cache jQuery selectors
+  // 
+  function findElements () {
+    $el = $('#controls')
+    $leafletControls = $('.leaflet-control-container')
+    $geolocateButton = $el.find('.geolocation')
   }
-}
 
-Controls.handleToggleMarkeListClick = bind(Controls.handleToggleMarkeListClick, Controls)
-Controls.handleGeolocateClick = bind(Controls.handleGeolocateClick, Controls)
-Controls.handleGeolocateDone = bind(Controls.handleGeolocateDone, Controls)
-Controls.handleGeolocateDone = bind(Controls.handleGeolocateDone, Controls)
-Controls.handleGeolocateDone = bind(Controls.handleGeolocateDone, Controls)
-Controls.handleBookmarkSelect = bind(Controls.handleBookmarkSelect, Controls)
+  // 
+  // bind to outsite events
+  // 
+  function bindToEvents() {
+    $el.on('click','.geolocate' , handleGeolocateClick);
+    $el.on('click','.bookmark' , handleBookmarkSelect);
+
+    $document.on("map:geolocated", handleGeolocateDone)
+    $document.on("map:geolocation:error", handleGeolocateDone)
+    $document.on("dialog:show", hide)
+    $document.on("dialog:hide", show)
+  }
+
+  // 
+  // 
+  // 
+  function show() {
+    $el.removeClass('hide')
+    $leafletControls.show()
+  }
+
+  // 
+  // 
+  // 
+  function hide() {
+    $el.addClass('hide')
+    $leafletControls.hide()
+  }
+
+  // 
+  // 
+  // 
+  function handleGeolocateClick (event) {
+    event.preventDefault()
+    $geolocateButton.addClass('loading');
+    $.event.trigger("map:geolocate")
+  }
+
+  // 
+  // 
+  // 
+  function handleGeolocateDone (event) {
+    $geolocateButton.removeClass('loading');
+  }
+
+  // 
+  // 
+  // 
+  function handleBookmarkSelect (event) {
+    var $target = $(event.target)
+    Map.setView($target.data(), $target.data('zoom'))
+  }
+
+})(jQuery, hoodie);

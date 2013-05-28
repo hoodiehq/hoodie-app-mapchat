@@ -1,14 +1,14 @@
 // MapChat module: the actual app
-var Map = (function(){
+(function($, hoodie, ich){
 
+  $document = $(document)
   var map, $map, tileLayer, markers = {};
-  var state = 'map';
   var activeMarker;
   var userPosition;
   var desktopBreakpoint = 1280;
   var baseMarkerIcon, defaultMarkerIcon, activeMarkerIcon;
 
-  var _init = function() {
+  var init = function() {
     $('.mainContainer').removeClass('hide');
     $('body').addClass('mapView');
 
@@ -20,13 +20,11 @@ var Map = (function(){
       isInitialized = true
     }
 
-    // show controls
-    Controls.show()
-
     // pre-populate map with markers
     hoodie.store.findAll('marker')
     .then( addAllMarkersFromStoreToMap )
   };
+  $document.on('app:ready', init)
 
   // Initialize the Leaflet map and its markers
   var isInitialized = false;
@@ -129,7 +127,6 @@ var Map = (function(){
     if(activeMarker.options.couchId == properties.id){
       activeMarker = null;
     }
-    updateMap();
   };
 
   // Updates views when all markers are removed
@@ -166,14 +163,9 @@ var Map = (function(){
     } else {
       if(targetHeight > maxHeight){
         targetHeight = maxHeight;
-        if(state === "detail"){
-          updateMap();
-          return;
-        }
       }
     }
     $contentContainer.css('height', targetHeight);
-    updateMap();
   };
 
   // -----------------------------
@@ -186,7 +178,6 @@ var Map = (function(){
     // if this is the active marker, show it in detail view and nothing else
     if(activeMarker && activeMarker.options.couchId == markerId){
       $.event.trigger("marker:show", markerId)
-      updateMap();
       return;
     }
 
@@ -282,33 +273,6 @@ var Map = (function(){
     var update = {}
     update[event.target.name] = event.target.value
     hoodie.store.update('marker', $marker.data('id'), update)
-  };
-
-  // Loads all marker items into the list
-  var populateMarkerList = function() {
-    var globalMarkerStore = markers;
-    hoodie.store.findAll('marker').done(function(markers){
-      var html;
-      resetContentContainer();
-      var $contentContainer = $('.contentContainer');
-      markers.forEach( function( marker ){
-        addCreatedAtReadable(marker);
-        marker.options = {};
-        marker.options.messages = globalMarkerStore[marker.id].options.messages;
-      });
-      var data = {};
-      if(markers.length !== 0){
-        data.data = {markers: markers};
-      }
-      html = ich.markerList(data);
-      $contentContainer.empty().append(html);
-      if(activeMarker){
-        var $activeItem = $("li[data-id='"+activeMarker.options.couchId+"']");
-        $activeItem.addClass('active');
-        $contentContainer.scrollTo($activeItem, 250);
-      }
-      onResize();
-    });
   };
 
   // --------
@@ -418,17 +382,6 @@ var Map = (function(){
   // Map
   // ---
 
-  // Resizes map to fit container and refreshes it
-  var updateMap = function(){
-    // Only needs to happen on small screens
-    if($(window).width() < desktopBreakpoint){
-      $('#map').css('bottom',$('.mainContainer').height());
-    } else {
-      $('#map').css('bottom',0);
-    }
-    if(map) map.invalidateSize();
-  };
-
   var centerMapOnCoordinates = function(properities) {
     var lat = properities.lat, 
         lng = properities.lng
@@ -476,9 +429,6 @@ var Map = (function(){
     .addTo(map)
     .showLabel()
     .on('click', onMarkerClick);
-    if(state == "list"){
-      populateMarkerList();
-    }
   };
 
   // -----
@@ -513,12 +463,4 @@ var Map = (function(){
     translatedEvent.latlng.lng = translatedEvent.lng;
     return translatedEvent;
   };
-
-  // Expose public methods
-  return {
-    show: _init,
-
-    locate: function(options) { map.locate(options) },
-    setView: function(options, zoom) { map.setView(options, zoom) }
-  }
-}());
+})(jQuery, hoodie, ich);

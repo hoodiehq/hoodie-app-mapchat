@@ -1,65 +1,110 @@
-var Login = {
-  isInitialized : false,
-  init : function() {
-    this.$container = $('#dialog')
+(function($, hoodie, ich){
 
-    this.render()
-    this.bindToEvents()
-  },
+  var $document = $(document);
+  var $container, $el, $username, $password, $alert;
+  var isInitialized = false;
 
-  render : function() {
-    this.$el = $( ich.login() )
-    this.$username = this.$el.find('input[name=username]')
-    this.$password = this.$el.find('input[name=password]')
-    this.$alert = this.$el.find('.alert-warn')
-  },
+  // 
+  // init gets run when app:ready event gets fired
+  // on app startup.
+  // 
+  function init() {
+    findElements()
+    render()
+    bindToEvents()
 
-  reset : function() {
-    this.$username.val('')
-    this.$password.val('')
-    this.$alert.text('').hide()
-  },
+    // on next tick, so all modules will be initialized
+    window.setTimeout( showWhenSignedOut )
+  }
+  $document.on('app:ready', init)
 
-  bindToEvents : function() {
-    this.$el.on('submit', 'form', this.handleSubmit)
-    hoodie.account.on('signout', this.show)
-  },
+  // 
+  // cache jQuery selectors
+  // 
+  function findElements () {
+    $container = $('#dialog')
+  }
 
-  show : function() {
-    if (! this.isInitialized ) this.init();
-    this.reset()
-    Controls.hide();
-    this.$container.show().html( this.$el )
-  },
+  // 
+  // render dialog and set $el
+  // 
+  function render() {
+    $el = $( ich.login() )
+    $username = $el.find('input[name=username]')
+    $password = $el.find('input[name=password]')
+    $alert = $el.find('.alert-warn')
+  }
 
-  hide : function() {
-    if (! this.isInitialized ) this.init();
-    this.$container.hide().html( '' )
-  },
+  // 
+  // bind to outsite events
+  // 
+  function bindToEvents() {
+    $el.on('submit', 'form', handleSubmit)
+    hoodie.account.on('signout', show)
+  }
 
-  handleSubmit : function(event) {
+  // 
+  // 
+  // 
+  function reset() {
+    $username.val('')
+    $password.val('')
+    $alert.text('').hide()
+  }
+
+  // 
+  // 
+  // 
+  function show() {
+    reset()
+    $.event.trigger('dialog:show')
+    $container.show().html( $el )
+  }
+
+  // 
+  // 
+  // 
+  function hide() {
+    $.event.trigger('dialog:hide')
+    $container.hide().html( '' )
+  }
+
+  // 
+  // 
+  // 
+  function handleSubmit(event) {
     event.preventDefault()
 
-    var username = this.$username.val();
-    var password = this.$password.val();
+    var username = $username.val();
+    var password = $password.val();
 
     hoodie.account.signIn(username, password)
-    .then(this.onSignInSucces).fail(this.onSignInError)
-  },
-
-  onSignInSucces : function(username) {
-    this.hide()
-    Map.show();
-  },
-
-  onSignInError : function(error) {
-    this.$alert.text(error.error+": "+error.reason).show();
-    this.$password.val('')
+    .then(onSignInSucces).fail(onSignInError)
   }
-}
 
+  // 
+  // 
+  // 
+  function onSignInSucces(username) {
+    hide()
+    Map.show();
+  }
 
-Login.show = bind(Login.show, Login)
-Login.handleSubmit = bind(Login.handleSubmit, Login)
-Login.onSignInSucces = bind(Login.onSignInSucces, Login)
-Login.onSignInError = bind(Login.onSignInError, Login)
+  // 
+  // 
+  // 
+  function onSignInError(error) {
+    $alert.text(error.error+": "+error.reason).show();
+    $password.val('')
+  }
+
+  // 
+  // 
+  // 
+  function showWhenSignedOut () {
+    if(! hoodie.account.username){
+      show();
+    }
+  }
+
+})(jQuery, hoodie, ich);
