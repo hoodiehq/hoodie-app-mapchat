@@ -225,6 +225,9 @@
   function save(event) {
     event.preventDefault()
     var name = $el.find('input[name=name]').val()
+    if(!name){
+      name = $el.find('header h3 span').text()
+    }
     hoodie.store.update('marker', currentMarker.id, {name: name})
     .then( render )
     $body.animate({scrollTop: 9999}, 300)
