@@ -1,4 +1,4 @@
-(function($, hoodie, ich, Config){
+(function(document, window, $, hoodie, ich, Config){
 
   var $document = $(document);
   var $window = $(window);
@@ -297,4 +297,4 @@
       return object.type === 'message' && object.parent == "marker/" + marker.id
     };
   }
-})(jQuery, hoodie, ich, Config);
+})(document, window, jQuery, hoodie, ich, Config);

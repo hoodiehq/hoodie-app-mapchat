@@ -1,4 +1,4 @@
-(function($, hoodie){
+(function(document, window, $, hoodie){
 
   var $document = $(document);
   var $el, $leafletControls, $geolocateButton;
@@ -96,4 +96,4 @@
     $.event.trigger('bookmark:open', [$target.data(), $target.data('zoom')])
   }
 
-})(jQuery, hoodie);
+})(document, window, jQuery, hoodie);

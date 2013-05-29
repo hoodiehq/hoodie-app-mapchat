@@ -1,4 +1,4 @@
-(function($, hoodie, ich, Config){
+(function(document, window, $, hoodie, ich, Config){
 
   var $document = $(document);
   var $el, $content, $search, $body;
@@ -235,4 +235,4 @@
     };
   }
 
-})(jQuery, hoodie, ich, Config);
+})(document, window, jQuery, hoodie, ich, Config);

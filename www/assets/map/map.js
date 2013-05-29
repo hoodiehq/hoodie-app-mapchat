@@ -1,5 +1,5 @@
 // MapChat module: the actual app
-(function($, hoodie, ich){
+(function(document, window, $, hoodie, ich){
 
   $document = $(document)
   $window = $(window)
@@ -492,4 +492,4 @@
     translatedEvent.latlng.lng = translatedEvent.lng;
     return translatedEvent;
   };
-})(jQuery, hoodie, ich);
+})(document, window, jQuery, hoodie, ich);

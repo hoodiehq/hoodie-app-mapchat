@@ -1,4 +1,4 @@
-(function($, hoodie, ich, Config){
+(function(document, window, $, hoodie, ich, Config){
 
   var $document = $(document);
   var $container, $el, $username, $password, $alert;
@@ -115,4 +115,4 @@
     }
   }
 
-})(jQuery, hoodie, ich, Config);
+})(document, window, jQuery, hoodie, ich, Config);
