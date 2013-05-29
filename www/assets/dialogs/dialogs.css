@@ -8,20 +8,17 @@
   background: rgba(0,0,0,.9)
 }
 
-#dialog .content {
-  margin: 0 auto;
-  padding: 0 0 40px;
-  max-width: 520px;
-  overflow: auto;
+#dialog .content { 
+  overflow: hidden;
+  padding: 40px;
   position: relative;
+
   background: #111;
   background: url(../images/noise.png), -moz-radial-gradient(50% 0, circle cover, #333 0%, #000 100%);
   background: url(../images/noise.png), -webkit-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
   background: url(../images/noise.png), -o-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
   background: url(../images/noise.png), -ms-radial-gradient(50% 0, circle cover, #333 0%,#000 100%);
   background: url(../images/noise.png), radial-gradient(circle at 50% 0, #333 0%,#000 100%);
-  border-radius: 0 0 10px 10px;
-  box-shadow: 0 0 5px 1px #000;
 }
 
 #dialog h1,
@@ -32,23 +29,16 @@
   font-size: 24px;
 }
 
-#dialog img{
-  margin: 1em auto;
-  display: block;
-}
-
-#dialog form,
-#dialog .alert{
-  margin: 0 auto;
-  max-width: 30em;
+#dialog .alert {
+  padding: 16px 35px 16px 14px;
+  margin-bottom: 10px;
 }
 #dialog button {
   margin-top: 10px;
 }
-
-#dialog .alert {
-  padding: 16px 35px 16px 14px;
-  margin-bottom: 10px;
+#dialog img{
+  margin: 1em auto;
+  display: block;
 }
 
 #dialog input[type="text"],
@@ -61,7 +51,16 @@
   height: 52px;
 }
 
-@media (max-width: 480px){
+/* login */
+#dialog .login.content {
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 0 5px 1px #000;
+  max-width: 30em;
+  margin: 0 auto; 
+}
+
+
+@media (max-width: 480px) {
   #dialog .content {
     padding: 20px;
   }
