@@ -1,7 +1,8 @@
 // Set correct Hoodie API endpoint depending on where the app is running
 var HOODIE_API_URL;
-if (/github\.io$/.test(location.hostname)) {
-  HOODIE_API_URL = 'http://hoodie-mapchat.jit.su/_api';
+if (! /(localhost|\.dev)$/.test(location.hostname)) {
+  // when running localy, use standard andpoint (defaults to /_api)
+  HOODIE_API_URL = Config.hoodieUrl;
 }
 
 // Init Hoodie and tell it where it's API is

@@ -1,5 +1,6 @@
 var Config = {
   appName : 'Hoodie MapChat',
+  hoodieUrl : 'http://hoodie-mapchat.jit.su/_api',
 
   messageTemplates : [
     // see local/data.in
