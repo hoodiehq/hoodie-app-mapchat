@@ -2215,7 +2215,7 @@ Hoodie.LocalStore = (function(_super) {
   };
 
   LocalStore.prototype._now = function() {
-    return JSON.stringify(new Date);
+    return JSON.stringify(new Date).replace(/"/g, '');
   };
 
   LocalStore.prototype._isValidId = function(key) {
