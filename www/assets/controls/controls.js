@@ -10,6 +10,7 @@
   function init() {
     findElements()
     bindToEvents()
+    render()
   };
   $document.on('app:ready', init)
 
@@ -18,6 +19,7 @@
   // 
   function findElements () {
     $el = $('#controls')
+    $menu = $el.find('ul.menu')
     $leafletControls = $('.leaflet-control-container')
     $geolocateButton = $el.find('.geolocation')
   }
@@ -35,6 +37,22 @@
     $document.on("dialog:hide", show)
 
     hoodie.account.on('signout', hide)
+  }
+
+  // 
+  // 
+  // 
+  function render () {
+    var html = ich.menu( {username: hoodie.account.username, Config: Config} );
+    $menu.html( html )
+    translate()
+  }
+
+  // 
+  // 
+  // 
+  function translate () {
+    document.webL10n.translate( $menu[0] )
   }
 
   // 
@@ -74,7 +92,7 @@
   // 
   function handleBookmarkSelect (event) {
     var $target = $(event.target)
-    Map.setView($target.data(), $target.data('zoom'))
+    $.event.trigger('bookmark:open', [$target.data(), $target.data('zoom')])
   }
 
 })(jQuery, hoodie);

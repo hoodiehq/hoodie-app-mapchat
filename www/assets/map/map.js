@@ -86,6 +86,7 @@
     });
     $document.on('marker:activate', onMarkerActivate)
     $document.on('marker:deactivate', onMarkerDeactivate)
+    $document.on('bookmark:open', handleBookmarkOpen)
 
     $map.on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend',
       function(event) {
@@ -450,6 +451,14 @@
     .showLabel()
     .on('click', triggerMarkerActivation);
   };
+
+  // 
+  // 
+  // 
+  function handleBookmarkOpen(event, latlng, zoom) {
+    map.setView(latlng, zoom)
+  }
+
 
   // -----
   // Other

@@ -59,40 +59,7 @@
               <button class="btn btn-medium dropdown-toggle btn-inverse" data-toggle="dropdown">
                   <i class="icon-user icon-white"></i>
               </button>
-              <ul class="dropdown-menu pull-right nav">
-                <li class="nav-header">
-                  <span class="hoodie-username">...<!-- usern name will be filled in here --></span>
-                </li>
-
-                <li>
-                  <a href="#" data-hoodie-action="signout">
-                    <i class="icon-off"></i>
-                    <span data-l10n-id="SignOut">Sign out</span>
-                  </a>
-                </li>
-
-                <li class="divider" style="height: 2px;"></li>
-                <li class="nav-header">
-                  <span data-l10n-id="Bookmarks">Bookmarks</span>
-                </li>
-                <li>
-                  <a tabindex="-1" href="#" class="bookmark" data-lat="52.500274" data-lng="13.419693" data-zoom="16">
-                    <i class="icon-map-marker"></i>
-                    Berlin
-                  </a>
-                </li>
-                <li>
-                  <a tabindex="-1" href="#" class="bookmark" data-lat="47.369234" data-lng="8.539252" data-zoom="14">
-                    <i class="icon-map-marker"></i>
-                    Zurich
-                  </a>
-                </li>
-                <li>
-                  <a tabindex="-1" href="#" class="bookmark" data-lat="52.95474" data-lng="-1.158972" data-zoom="14">
-                    <i class="icon-map-marker"></i>
-                    Nottingham
-                  </a>
-                </li>
+              <ul class="menu dropdown-menu pull-right nav">
               </ul>
             </span>
           </div><!-- /.user -->
@@ -243,6 +210,35 @@
           <button class="signIn btn btn-large btn-inverse" data-l10n-id="SignIn">Sign in</button>
         </form>
       </div>
+    </script>
+
+    <script id="menu" type="text/html">
+      <li class="nav-header">
+        <span class="hoodie-username">{{username}}</span>
+      </li>
+
+      <li>
+        <a href="#" data-hoodie-action="signout">
+          <i class="icon-off"></i>
+          <span data-l10n-id="SignOut">Sign out</span>
+        </a>
+      </li>
+
+      <li class="divider" style="height: 2px;"></li>
+
+      {{#Config.bookmarks.length}}
+      <li class="nav-header">
+        <span data-l10n-id="Bookmarks">Bookmarks</span>
+      </li>
+      {{#Config.bookmarks}}
+      <li>
+        <a tabindex="-1" href="#" class="bookmark" data-lat="{{lat}}" data-lng="{{lng}}" data-zoom="{{zoom}}">
+          <i class="icon-map-marker"></i>
+          {{ name }}
+        </a>
+      </li>
+      {{/Config.bookmarks}}
+      {{/Config.bookmarks.length}}
     </script>
 
     <!-- vendor -->
