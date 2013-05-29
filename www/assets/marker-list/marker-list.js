@@ -58,7 +58,7 @@
     var searchTerm = $(event.target).val().toLowerCase();
     if(searchTerm){
       $('.markerListItem').each(function(index, item){
-        var name = $(item).find('.name').text();
+        var name = $(item).find('.name').text() + $(item).find('.owner').text() ;
         if(name.toLowerCase().indexOf(searchTerm) == -1){
           $(item).addClass('hidden')
         } else {
