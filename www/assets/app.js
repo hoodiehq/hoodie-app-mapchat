@@ -12,9 +12,11 @@ var t = document.webL10n.get;
 // getting rid of this one soon
 bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
 
-(function($){
+(function(window, document, $){
 
   var $document = $(document)
+  var $window = $(window)
+  var $el
 
   //
   // gets executed when dom ready
@@ -30,16 +32,37 @@ bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }
     
 
     var throttledResize = _.throttle(sendResizeEvent, 300);
-    $(window).on('resize', function(event){
+    $window.on('resize', function(event){
       throttledResize();
     })
 
+    findElements()
+    render()
     $.event.trigger('app:ready')
   }
   window.addEventListener('localized', init, false);
 
+
+  //
+  //
+  //
+  function findElements() {
+    $el = $('html')
+  }
+
+
+  //
+  //
+  //
+  function render() {
+  }
+
+
+  // 
+  // 
+  // 
   function sendResizeEvent() {
     $.event.trigger('app:resize')
   }
 
-})(jQuery);
+})(window, document, jQuery);
