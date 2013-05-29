@@ -75,7 +75,7 @@
 
 #map { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
 .mapContainer {
-  position: absolute; top: 0; left: 0; width: 100%; bottom: 0;
+  position: absolute; top: 0; left: 280px; width: auto; bottom: 0; right: 0;
   transition: bottom .2s, left .2s;
   min-width: 320px;
   background: #B4D0D0;

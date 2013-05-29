@@ -12,7 +12,7 @@
     bindToEvents()
     renderMarkers()
     resize()
-  };
+  }
   $document.on('app:ready', init)
 
   //
@@ -29,15 +29,16 @@
   // bind to outside events
   //
   function bindToEvents() {
-    $el.on('click', '.list li', handleMarkerSelect)
+    $el.on('click', '.list li', triggerMarkerActivation)
     $el.on('input change', $search, handleSearch)
 
-    $document.on('marker:activate', handleMarkerActivate)
+    $document.on('marker:activate', handleMarkerActivation)
     $document.on('app:resize', resize)
 
     hoodie.store.on('change clear', renderMarkers )
     hoodie.account.on('signout', hide )
-    $('.toggle-marker-list').on('click', handleToggleMarkeListClick);
+
+    $('.toggle-marker-list').on('click', handleToggleMarkerListClick);
   }
 
   //
@@ -73,18 +74,15 @@
   //
   //
   //
-  function handleMarkerSelect(event) {
+  function triggerMarkerActivation(event) {
     event.preventDefault()
-
-    var $marker = $(event.currentTarget)
-    var id = $marker.data('id')
-    $.event.trigger('marker:activate', id )
+    $.event.trigger('marker:activate', $(event.currentTarget).data('id') )
   }
 
   //
   //
   //
-  function handleToggleMarkeListClick(event) {
+  function handleToggleMarkerListClick(event) {
     event.preventDefault()
     event.stopPropagation()
     toggle()
@@ -93,7 +91,8 @@
   //
   //
   //
-  function handleMarkerActivate(event, id) {
+  function handleMarkerActivation(event, id) {
+    console.log("handleMarkerActivation: ",id);
     var $items = $el.find('[data-id]')
     $items.removeClass('active');
     $items.filter('[data-id='+id+']').addClass('active');
@@ -162,7 +161,6 @@
   function show() {
     $el.attr('data-mode', 'show')
     $el.data('mode', 'show')
-    $.event.trigger('markerlist:open')
 
   }
 
@@ -172,7 +170,6 @@
   function hide() {
     $el.attr('data-mode', 'hide')
     $el.data('mode', 'hide')
-    $.event.trigger('markerlist:closed')
   }
 
   //

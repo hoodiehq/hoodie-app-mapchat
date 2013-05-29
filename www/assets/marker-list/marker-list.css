@@ -1,14 +1,13 @@
-html {
-  background: #202020 url(../images/noise.png);
-}
-#markerList {
 
+#markerList {
+  background: #202020 url(../images/noise.png);
   position: fixed;
   left:0;
   top:0;
   bottom: 0;
   width: 280px;
   transition: left .2s linear;
+  -webkit-transition: left .2s linear;
   overflow: hidden;
 }
 #markerList:after {
@@ -29,8 +28,7 @@ html {
   margin: 10px 10px 0 10px;
 }
 #markerList header input[type=search] {
-  width: 200px;
-  margin-left: 60px;
+  width: 260px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -177,18 +175,21 @@ html {
 }
 
 .toggle-marker-list {
+  display: none;
   position: fixed;
   top: 10px;
   left: 10px;
   z-index: 100;
 }
 
-/* toggle map */
+/* toggle map
 .mapContainer {
   transition: left .2s linear;
+  -webkit-transiton: left .2s linear;
 }
 #markerList[data-mode="show"] ~ .mapContainer {
   left: 280px;
   right: 0;
   width: auto;
 }
+*/

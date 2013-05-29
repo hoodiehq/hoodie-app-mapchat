@@ -1,22 +1,31 @@
 #marker-detail {
   position: absolute;
-  left: 0; 
+  left: 280px;
   right: 0;
   background: #FFF;
 
   z-index: 200;
   padding: 10px;
-  top: 100%;
+  /*top: 100%;*/
 
-  transition: left .2s;
+  transition: left .2s, top .2s;
 }
+
+#marker-detail.preview {
+  bottom: 0;
+}
+
+#marker-detail.preview .messages{
+  display: none;
+}
+
 #marker-detail:before {
   content: '';
   display: block;
   position: absolute;
-  top: -20px; 
-  left: 0; 
-  right: 0; 
+  top: -20px;
+  left: 0;
+  right: 0;
   bottom: 100%;
   background: rgba(255,255,255,.5);
 }

@@ -41,6 +41,9 @@
     $document.on('marker:show', show)
     $document.on('marker:activate', show)
 
+    $document.on('markerlist:open', layoutPreview);
+    $document.on('markerlist:close', layoutPreview);
+
     hoodie.store.on('add:marker', handleNewMarker )
     hoodie.account.on('signout', hide )
   }
@@ -63,14 +66,13 @@
 
      hoodie.store.find('marker', markerId)
      .then( render )
-     .then( scrollToPreviewPosition );
+     .then( layoutPreview );
   }
 
   //
   //
   //
   function showForm () {
-    console.log("showForm: ",showForm);
     var currentScrollTop = $window.scrollTop()
     if (currentScrollTop < 200) {
       $body.animate({scrollTop: 200}, 300)
@@ -93,7 +95,7 @@
     if (! markerId) markerId = currentMarker.id;
     hoodie.store.find('marker', markerId)
     .then( render )
-    .then( scrollToPreviewPosition );
+    .then( layoutPreview );
 
     subscribeToScroll()
   }
@@ -101,16 +103,10 @@
   // Calculate preview header height and scroll accordingly
   // because we need to accomodate various text lengths
   //
-  function scrollToPreviewPosition() {
-    var $marker = $('#marker-detail article.marker > header');
-    var markerDetailHeaderHeight = $marker.height() + 20;
-    console.log("markerDetailHeaderHeight: ",markerDetailHeaderHeight);
-    var duration = 300;
-    // Don't animate if going from preview to preview
-    if($window.scrollTop() !== 0){
-      duration = 0
-    }
-    $body.animate({scrollTop: markerDetailHeaderHeight}, duration)
+  function layoutPreview() {
+    var $markerDetail = $('#marker-detail article.marker > header');
+    var markerDetailHeaderHeight = $markerDetail.height() + 20;
+    $el.addClass('preview');
   }
 
   //

@@ -4,7 +4,8 @@
   $document = $(document)
   $window = $(window)
   var map, $map, tileLayer, markers = {};
-  var state = 'map';
+  var states = [];
+  var bottomOffset = 0;
   var activeMarker;
   var userPosition;
   var desktopBreakpoint = 1280;
@@ -83,12 +84,11 @@
     $document.on('marker:activate', onMarkerActivate)
     $document.on('marker:deactivate', onMarkerDeactivate)
 
-    $document.on('markerlist:open', function(){
-      setState('list');
-    });
-    $document.on('markerlist:closed', function(){
-      setState('map');
-    });
+    $map.on('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend',
+      function(event) {
+        onResize()
+      }
+    );
 
     // Window resize
     $window.on('resize', onResize);
@@ -163,30 +163,21 @@
   };
 
   var onResize = function() {
-    // To ensure super smooth, always centered, border-free map resizing,
-    // we have to jump through some hoops. Animation of size and position of
-    // the map is done via CSS3 transitions, but we want to re-center the Leaflet map via JS
-    // while it is animating. This works with Leaflet's native map.invalidateSize(true)
-    // when animating to 100% width, but looks bad when resizing to anything smaller.
-    // For this, we continuously update the map while the animation is running.
-    // This would be nicer if there was a CSS3 event for transitionInterval,
-    // but sadly there isn't.
-
-    // States where the map is smaller than 100% x 100%
-    if(state === 'list'){
-      mapUpdaterInterval = window.setInterval(function(){
-        map.invalidateSize(false)
-      }, 20);
-
-      _.delay(function(){
-        clearInterval(mapUpdaterInterval)
-      }, 200);
+    if(states.indexOf('preview') !== -1){
+      var $markerDetailHeader = $('#marker-detail.preview article.marker > header');
+      var markerDetailHeaderHeight = $markerDetailHeader.height() + 20;
+      bottomOffset = markerDetailHeaderHeight;
     } else {
-      map.invalidateSize(true)
+      bottomOffset = 0;
     }
 
-
-
+    var $mapContainer = $('.mapContainer');
+    $mapContainer.animate({
+      height: $window.height() - bottomOffset
+    }, 0, function(){
+      map.invalidateSize(true)
+    });
+    map.invalidateSize(true)
 
     /*
     var $contentContainer = $('.contentContainer');
@@ -209,36 +200,31 @@
   // Additional events for markers
   // -----------------------------
 
-  var onMarkerClick = function(event) {
+  var triggerMarkerActivation = function(event) {
     var markerId = event.target.options.couchId;
-    console.log("onMarkerClick: ",markerId);
+    $.event.trigger("marker:activate", markerId)
+  }
 
+  var onMarkerActivate = function(event, markerId) {
     // if this is the active marker, show it in detail view and nothing else
     if(activeMarker && activeMarker.options.couchId == markerId){
       $.event.trigger("marker:show", markerId)
       return;
     }
-
-    $.event.trigger("marker:activate", markerId)
-  }
-
-  var onMarkerActivate = function(event, markerId) {
     console.log("onMarkerActivate: ",markerId);
-
     hoodie.store.find('marker', markerId)
     .then( function(marker) {
-
       centerMapOnCoordinates(marker)
       activateMarker(marker.id);
-
-      var newState;
-      var $contentContainer = $('.contentContainer');
+      addState('preview')
+      onResize()
     });
   };
 
   var onMarkerDeactivate = function(event, markerId) {
     console.log("onMarkerDeactivate: ",markerId);
     deactivateActiveMarker()
+    removeState('preview')
   };
 
   // ------------------
@@ -267,10 +253,15 @@
   // Global events
   // -------------
 
-  var setState = function(newState) {
-    console.log("setState: ",newState);
-    if(newState === state) return;
-    state = newState
+  var addState = function(newState) {
+    if(states.indexOf(newState) === -1){
+      states.push(newState)
+    }
+    onResize();
+  }
+
+  var removeState = function(oldState) {
+    states.splice(states.indexOf(oldState),1);
     onResize();
   }
 
@@ -485,7 +476,7 @@
     .bindLabel("", { noHide: true })
     .addTo(map)
     .showLabel()
-    .on('click', onMarkerClick);
+    .on('click', triggerMarkerActivation);
   };
 
   // -----
