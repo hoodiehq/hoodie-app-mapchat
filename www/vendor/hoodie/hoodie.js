@@ -332,6 +332,7 @@ Hoodie.Account = (function() {
         error: 'you have to sign out first'
       }).promise();
     }
+    username = username.toLowerCase();
     options = {
       data: JSON.stringify({
         _id: this._key(username),
@@ -387,9 +388,13 @@ Hoodie.Account = (function() {
   Account.prototype.signIn = function(username, password) {
     var _this = this;
 
+    if (username == null) {
+      username = '';
+    }
     if (password == null) {
       password = '';
     }
+    username = username.toLowerCase();
     if (this.username !== username) {
       return this.signOut({
         silent: true
@@ -504,7 +509,10 @@ Hoodie.Account = (function() {
   };
 
   Account.prototype.changeUsername = function(currentPassword, newUsername) {
-    return this._changeUsernameAndPassword(currentPassword, newUsername);
+    if (newUsername == null) {
+      newUsername = '';
+    }
+    return this._changeUsernameAndPassword(currentPassword, newUsername.toLowerCase());
   };
 
   Account.prototype.destroy = function() {
@@ -1360,6 +1368,20 @@ Hoodie.Remote = (function(_super) {
     });
   };
 
+  Remote.prototype.isKnownObject = function(object) {
+    var key;
+
+    key = "" + object.type + "/" + object.id;
+    return this._knownObjects[key] != null;
+  };
+
+  Remote.prototype.markAsKnownObject = function(object) {
+    var key;
+
+    key = "" + object.type + "/" + object.id;
+    return this._knownObjects[key] = 1;
+  };
+
   Remote.prototype.connect = function(options) {
     this.connected = true;
     return this.pull();
@@ -1579,17 +1601,17 @@ Hoodie.Remote = (function(_super) {
       }
       object = this._parseFromRemote(doc);
       if (object._deleted) {
-        if (!this._knownObjects[object.id]) {
+        if (!this.isKnownObject(object)) {
           continue;
         }
         event = 'remove';
-        delete this._knownObjects[object.id];
+        delete this.isKnownObject(object);
       } else {
-        if (this._knownObjects[object.id]) {
+        if (this.isKnownObject(object)) {
           event = 'update';
         } else {
           event = 'add';
-          this._knownObjects[object.id] = 1;
+          this.markAsKnownObject(object);
         }
       }
       this.trigger("" + event, object);
@@ -1644,6 +1666,7 @@ Hoodie.AccountRemote = (function(_super) {
     this.hoodie.on('account:signout', this.disconnect);
     this.hoodie.on('reconnected', this.connect);
     AccountRemote.__super__.constructor.call(this, this.hoodie, options);
+    this.bootstrapKnownObjects();
   }
 
   AccountRemote.prototype.connect = function() {
@@ -1653,6 +1676,22 @@ Hoodie.AccountRemote = (function(_super) {
   AccountRemote.prototype.disconnect = function() {
     this.hoodie.unbind('store:idle', this.push);
     return AccountRemote.__super__.disconnect.apply(this, arguments);
+  };
+
+  AccountRemote.prototype.bootstrapKnownObjects = function() {
+    var id, key, type, _i, _len, _ref, _ref1, _results;
+
+    _ref = this.hoodie.store.index();
+    _results = [];
+    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+      key = _ref[_i];
+      _ref1 = key.split(/\//), type = _ref1[0], id = _ref1[1];
+      _results.push(this.markAsKnownObject({
+        type: type,
+        id: id
+      }));
+    }
+    return _results;
   };
 
   AccountRemote.prototype.getSinceNr = function(since) {
@@ -1866,7 +1905,7 @@ Hoodie.LocalStore = (function(_super) {
     if (this.hoodie.isPromise(defer)) {
       return this._decoratePromise(defer);
     }
-    keys = this._index();
+    keys = this.index();
     if (typeof filter === 'string') {
       type = filter;
       filter = function(obj) {
@@ -1958,6 +1997,19 @@ Hoodie.LocalStore = (function(_super) {
 
   LocalStore.prototype.removeAll = function() {
     return this._decoratePromise(LocalStore.__super__.removeAll.apply(this, arguments));
+  };
+
+  LocalStore.prototype.index = function() {
+    var i, key, keys, _i, _ref;
+
+    keys = [];
+    for (i = _i = 0, _ref = this.db.length(); 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
+      key = this.db.key(i);
+      if (this._isSemanticId(key)) {
+        keys.push(key);
+      }
+    }
+    return keys;
   };
 
   LocalStore.prototype.cache = function(type, id, object, options) {
@@ -2084,7 +2136,7 @@ Hoodie.LocalStore = (function(_super) {
 
     defer = this.hoodie.defer();
     try {
-      keys = this._index();
+      keys = this.index();
       results = (function() {
         var _i, _len, _results;
 
@@ -2242,16 +2294,6 @@ Hoodie.LocalStore = (function(_super) {
 
   LocalStore.prototype._isMarkedAsDeleted = function(object) {
     return object._deleted === true;
-  };
-
-  LocalStore.prototype._index = function() {
-    var i, _i, _ref, _results;
-
-    _results = [];
-    for (i = _i = 0, _ref = this.db.length(); 0 <= _ref ? _i < _ref : _i > _ref; i = 0 <= _ref ? ++_i : --_i) {
-      _results.push(this.db.key(i));
-    }
-    return _results;
   };
 
   LocalStore.prototype._triggerEvents = function(event, object, options) {
