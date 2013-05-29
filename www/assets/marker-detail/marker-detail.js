@@ -49,6 +49,7 @@
   //
   //
   function show(event, markerId) {
+    console.log("show: ",markerId);
     if (isCurrentMarker(markerId)) {
        detail(markerId)
        return
@@ -60,18 +61,16 @@
        return
      }
 
-     if ( $window.scrollTop() < 110) {
-       $body.animate({scrollTop: 110}, 300)
-     }
-
      hoodie.store.find('marker', markerId)
-     .then( render );
+     .then( render )
+     .then( scrollToPreviewPosition );
   }
 
   //
   //
   //
   function showForm () {
+    console.log("showForm: ",showForm);
     var currentScrollTop = $window.scrollTop()
     if (currentScrollTop < 200) {
       $body.animate({scrollTop: 200}, 300)
@@ -92,15 +91,26 @@
   //
   function preview(markerId) {
     if (! markerId) markerId = currentMarker.id;
-
-    if ( $window.scrollTop() < 110) {
-      $body.animate({scrollTop: 110}, 300)
-    }
-
     hoodie.store.find('marker', markerId)
-    .then( render );
+    .then( render )
+    .then( scrollToPreviewPosition );
 
     subscribeToScroll()
+  }
+
+  // Calculate preview header height and scroll accordingly
+  // because we need to accomodate various text lengths
+  //
+  function scrollToPreviewPosition() {
+    var $marker = $('#marker-detail article.marker > header');
+    var markerDetailHeaderHeight = $marker.height() + 20;
+    console.log("markerDetailHeaderHeight: ",markerDetailHeaderHeight);
+    var duration = 300;
+    // Don't animate if going from preview to preview
+    if($window.scrollTop() !== 0){
+      duration = 0
+    }
+    $body.animate({scrollTop: markerDetailHeaderHeight}, duration)
   }
 
   //
@@ -204,6 +214,7 @@
   //
   //
   function hide() {
+    console.log("hide: ",hide);
     var scrollTop = $window.scrollTop()
     $.event.trigger('map:center', [currentMarker, { y : -scrollTop}])
     currentMarker = {}
@@ -349,6 +360,7 @@
   //
   //
   function checkScrollPosition () {
+    return;
     var scrollTop = $window.scrollTop()
 
     if (scrollTop < 80) {

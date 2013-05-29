@@ -211,6 +211,7 @@
 
   var onMarkerClick = function(event) {
     var markerId = event.target.options.couchId;
+    console.log("onMarkerClick: ",markerId);
 
     // if this is the active marker, show it in detail view and nothing else
     if(activeMarker && activeMarker.options.couchId == markerId){
@@ -222,6 +223,7 @@
   }
 
   var onMarkerActivate = function(event, markerId) {
+    console.log("onMarkerActivate: ",markerId);
 
     hoodie.store.find('marker', markerId)
     .then( function(marker) {
@@ -235,6 +237,7 @@
   };
 
   var onMarkerDeactivate = function(event, markerId) {
+    console.log("onMarkerDeactivate: ",markerId);
     deactivateActiveMarker()
   };
 
