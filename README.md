@@ -3,7 +3,7 @@ Hoodie MapChat
 
 An open source, offline capable, map based demo app.
 
-![Screenshot](https://raw.github.com/hoodiehq/example-mapchat/master/screenshot.png)
+<a href="http://ami.responsivedesign.is/?url=http%3A%2F%2Fhoodiehq.github.io%2Fexample-mapchat%2Fwww">![Screenshot](https://raw.github.com/hoodiehq/example-mapchat/master/screenshot.png)</a>
 
 
 Implementation / Dependencies
