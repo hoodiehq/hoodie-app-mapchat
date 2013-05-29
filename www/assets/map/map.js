@@ -4,10 +4,12 @@
   $document = $(document)
   $window = $(window)
   var map, $map, tileLayer, markers = {};
+  var state = 'map';
   var activeMarker;
   var userPosition;
   var desktopBreakpoint = 1280;
   var baseMarkerIcon, defaultMarkerIcon, activeMarkerIcon;
+  var mapUpdaterInterval;
 
   var init = function() {
     $('.mainContainer').removeClass('hide');
@@ -81,6 +83,13 @@
     $document.on('marker:activate', onMarkerActivate)
     $document.on('marker:deactivate', onMarkerDeactivate)
 
+    $document.on('markerlist:open', function(){
+      setState('list');
+    });
+    $document.on('markerlist:closed', function(){
+      setState('map');
+    });
+
     // Window resize
     $window.on('resize', onResize);
     onResize();
@@ -153,9 +162,33 @@
     map.locate({setView: true, maxZoom: 16});
   };
 
-
-
   var onResize = function() {
+    // To ensure super smooth, always centered, border-free map resizing,
+    // we have to jump through some hoops. Animation of size and position of
+    // the map is done via CSS3 transitions, but we want to re-center the Leaflet map via JS
+    // while it is animating. This works with Leaflet's native map.invalidateSize(true)
+    // when animating to 100% width, but looks bad when resizing to anything smaller.
+    // For this, we continuously update the map while the animation is running.
+    // This would be nicer if there was a CSS3 event for transitionInterval,
+    // but sadly there isn't.
+
+    // States where the map is smaller than 100% x 100%
+    if(state === 'list'){
+      mapUpdaterInterval = window.setInterval(function(){
+        map.invalidateSize(false)
+      }, 20);
+
+      _.delay(function(){
+        clearInterval(mapUpdaterInterval)
+      }, 200);
+    } else {
+      map.invalidateSize(true)
+    }
+
+
+
+
+    /*
     var $contentContainer = $('.contentContainer');
     $contentContainer.css('height', 'auto');
     var padding = 11;
@@ -169,6 +202,7 @@
       }
     }
     $contentContainer.css('height', targetHeight);
+    */
   };
 
   // -----------------------------
@@ -225,6 +259,17 @@
     if(userPosition) map.removeLayer(userPosition);
     userPosition = null;
   };
+
+  // -------------
+  // Global events
+  // -------------
+
+  var setState = function(newState) {
+    console.log("setState: ",newState);
+    if(newState === state) return;
+    state = newState
+    onResize();
+  }
 
   // -------------------------
   // General application logic
@@ -386,10 +431,11 @@
   // ---
 
   var centerMapOnCoordinates = function(properities, extraOffset) {
+    map.invalidateSize(false)
     if(!properities.lat || !properities.lng) return;
     var lat = properities.lat,
         lng = properities.lng
-
+    /*
     if (! extraOffset ) extraOffset = {}
     if (! extraOffset.x ) extraOffset.x = 0
     if (! extraOffset.y ) extraOffset.y = 0
@@ -407,9 +453,9 @@
 
     // 3. turn pixel point back to lat/lng
     var latlng = map.unproject(point)
-
+    */
     // \o/
-    map.panTo(latlng);
+    map.panTo(L.latLng(lat,lng));
   };
 
   // Displays a marker on the map

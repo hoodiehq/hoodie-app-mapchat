@@ -68,9 +68,9 @@
      .then( render );
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function showForm () {
     var currentScrollTop = $window.scrollTop()
     if (currentScrollTop < 200) {
@@ -191,9 +191,9 @@
     }.bind(this))
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function translate ( $tree ) {
     $tree || ( $tree = $el)
     $tree.find('.date').timeago()
@@ -249,6 +249,7 @@
     $el.html( html )
     translate()
     $body.animate({scrollTop: 9999}, 300)
+    $('#marker-detail input:eq(0)').focus()
   }
 
   //

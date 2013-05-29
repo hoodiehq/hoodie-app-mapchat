@@ -148,9 +148,9 @@
     }.bind(this) )
   }
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function translate ( $tree ) {
     $tree || ( $tree = $el)
     document.webL10n.translate($tree[0])
@@ -162,6 +162,8 @@
   function show() {
     $el.attr('data-mode', 'show')
     $el.data('mode', 'show')
+    $.event.trigger('markerlist:open')
+
   }
 
   //
@@ -170,6 +172,7 @@
   function hide() {
     $el.attr('data-mode', 'hide')
     $el.data('mode', 'hide')
+    $.event.trigger('markerlist:closed')
   }
 
   //

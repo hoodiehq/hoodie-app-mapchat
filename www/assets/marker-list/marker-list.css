@@ -189,4 +189,6 @@ html {
 }
 #markerList[data-mode="show"] ~ .mapContainer {
   left: 280px;
+  right: 0;
+  width: auto;
 }
