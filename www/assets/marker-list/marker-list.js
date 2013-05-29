@@ -11,6 +11,8 @@
     findElements()
     bindToEvents()
     renderMarkers()
+    render()
+    resize()
   }
   $document.on('app:ready', init)
 
@@ -22,6 +24,7 @@
     $content = $el.find('.content')
     $search = $el.find('input[type=search]')
     $body = $('body')
+    $toggle = $('.toggle-marker-list')
   }
 
   //
@@ -41,6 +44,15 @@
 
     $('.toggle-marker-list').on('click', handleToggleMarkerListClick);
   }
+
+
+  //
+  //
+  //
+  function render() {
+    $toggle.show()
+  }
+
 
   //
   //

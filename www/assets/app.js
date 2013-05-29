@@ -38,7 +38,7 @@ bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }
 
     findElements()
     render()
-    $.event.trigger('app:ready')
+    // $.event.trigger('app:ready')
   }
   window.addEventListener('localized', init, false);
 

@@ -11,6 +11,7 @@
     findElements()
     bindToEvents()
     render()
+    show()
   };
   $document.on('app:ready', init)
 
