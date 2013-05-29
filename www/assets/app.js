@@ -48,6 +48,7 @@ bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }
   //
   function findElements() {
     $el = $('html')
+    $title = $('title')
   }
 
 
@@ -55,6 +56,7 @@ bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }
   //
   //
   function render() {
+    $title.text( Config.appName )
   }
 
 
