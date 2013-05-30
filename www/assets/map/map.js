@@ -81,7 +81,7 @@
       console.log('map:center')
       centerMapOnCoordinates(marker, offset)
     })
-    $document.on('map:resize', onMarkerActivate)
+    $document.on('map:resize', onResize)
     $document.on('marker:activate', onMarkerActivate)
     $document.on('marker:deactivate', onMarkerDeactivate)
 
