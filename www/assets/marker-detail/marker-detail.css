@@ -82,3 +82,10 @@
 #markerList[data-mode="show"] ~ #marker-detail {
   left: 280px;
 }
+
+@media only screen and (max-width: 480px){
+  #marker-detail {
+    left: 0px;
+    width: 100%;
+  }
+}

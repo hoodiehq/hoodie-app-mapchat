@@ -96,8 +96,9 @@
   margin-left: -125px;
 }
 
-/*
-#marker-detail.detail ~ .mapContainer {
-  height: 40%;
+@media only screen and (max-width: 480px){
+  .mapContainer {
+    left: 0px;
+    width: 100%;
+  }
 }
-*/
