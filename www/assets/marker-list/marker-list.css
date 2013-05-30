@@ -195,7 +195,31 @@
 */
 
 @media only screen and (max-width: 480px){
+  .toggle-marker-list {
+    display: block;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+  }
   #markerList {
+    display: block;
+    top: 40%;
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+    height: 60%;
+  }
+  #markerList .content{
+    height:88%;
+  }
+  #markerList header input[type=search] {
+    width: 100%;
+  }
+  #markerList[data-mode="hide"]{
+    display: none;
+  }
+  #markerList[data-mode="show"] ~ #marker-detail{
     display: none;
   }
 }

@@ -82,6 +82,7 @@
       centerMapOnCoordinates(marker, offset)
     })
     $document.on('map:resize', onResize)
+    $document.on('map:mobileList', setState('list'))
     $document.on('marker:activate', onMarkerActivate)
     $document.on('marker:deactivate', onMarkerDeactivate)
 
@@ -173,6 +174,13 @@
         var $markerDetailHeader = $('#marker-detail.preview article.marker > header');
         var markerDetailHeaderHeight = $markerDetailHeader.height() + 20;
         targetHeight = $window.height() - markerDetailHeaderHeight;
+      break;
+      case 'list':
+        if($(window).width() <= 480){
+          targetHeight = '40%';
+        } else {
+          targetHeight = '100%';
+        }
       break;
       case 'detail':
         targetHeight = '40%';

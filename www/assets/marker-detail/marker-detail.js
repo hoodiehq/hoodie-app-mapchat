@@ -94,6 +94,7 @@
 
     $el.removeClass('hide preview').addClass('detail')
     if(!$el.hasClass('preview')){
+      $.event.trigger('list:hide');
       // This is a different marker than the one who'se preview we've loaded,
       // so load the new marker
       hoodie.store.find('marker', markerId)

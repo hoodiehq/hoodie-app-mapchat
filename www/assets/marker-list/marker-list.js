@@ -11,6 +11,7 @@
     findElements()
     bindToEvents()
     renderMarkers()
+    show()
     resize()
   }
   $document.on('app:ready', init)
@@ -35,6 +36,7 @@
     $document.on('marker:activate', handleMarkerActivation)
     $document.on('marker:deactivate', handleMarkerDeactivation)
     $document.on('app:resize', resize)
+    $document.on('list:hide', hide)
 
     hoodie.store.on('change clear', renderMarkers )
     hoodie.account.on('signout', hide )
@@ -46,11 +48,15 @@
   //
   //
   function resize() {
-    var ww = $(window).width()
-    var wh = $(window).height()
-    console.log("resize: ",ww, wh);
-    var headerHeight = $el.find('header').outerHeight(true);
-    $el.find('.content').height(wh-headerHeight);
+    if($(window).width() <= 480 ){
+      $.event.trigger('map:mobileList');
+    } else {
+      var ww = $(window).width()
+      var wh = $(window).height()
+      console.log("resize: ",ww, wh);
+      var headerHeight = $el.find('header').outerHeight(true);
+      $el.find('.content').height(wh-headerHeight);
+    }
   }
 
   //
@@ -84,6 +90,7 @@
   //
   //
   function handleToggleMarkerListClick(event) {
+    if($(window).width() > 480) return;
     event.preventDefault()
     event.stopPropagation()
     toggle()
