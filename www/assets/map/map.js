@@ -4,7 +4,7 @@
   $document = $(document)
   $window = $(window)
   var map, $map, tileLayer, markers = {};
-  var states = [];
+  var state = 'map';
   var bottomOffset = 0;
   var activeMarker;
   var userPosition;
@@ -81,6 +81,7 @@
       console.log('map:center')
       centerMapOnCoordinates(marker, offset)
     })
+    $document.on('map:resize', onMarkerActivate)
     $document.on('marker:activate', onMarkerActivate)
     $document.on('marker:deactivate', onMarkerDeactivate)
 
@@ -163,37 +164,24 @@
   };
 
   var onResize = function() {
-    if(states.indexOf('preview') !== -1){
-      var $markerDetailHeader = $('#marker-detail.preview article.marker > header');
-      var markerDetailHeaderHeight = $markerDetailHeader.height() + 20;
-      bottomOffset = markerDetailHeaderHeight;
-    } else {
-      bottomOffset = 0;
+    switch(state){
+      default:
+      case 'map':
+        targetHeight = '100%';
+      break;
+      case 'preview':
+        var $markerDetailHeader = $('#marker-detail.preview article.marker > header');
+        var markerDetailHeaderHeight = $markerDetailHeader.height() + 20;
+        targetHeight = $window.height() - markerDetailHeaderHeight;
+      break;
+      case 'detail':
+        targetHeight = '40%';
+      break;
     }
 
-    var $mapContainer = $('.mapContainer');
-    $mapContainer.animate({
-      height: $window.height() - bottomOffset
-    }, 0, function(){
-      map.invalidateSize(true)
-    });
+    $('.mapContainer').css('height', targetHeight);
     map.invalidateSize(true)
 
-    /*
-    var $contentContainer = $('.contentContainer');
-    $contentContainer.css('height', 'auto');
-    var padding = 11;
-    var targetHeight = $contentContainer.children().outerHeight(true);
-    var maxHeight = $window.height() * 0.66-$('.mainContainer .tabBar').height() - padding;
-    if($window.width() >= desktopBreakpoint){
-      targetHeight = $window.height() - $('.mainContainer .tabBar').height() - padding;
-    } else {
-      if(targetHeight > maxHeight){
-        targetHeight = maxHeight;
-      }
-    }
-    $contentContainer.css('height', targetHeight);
-    */
   };
 
   // -----------------------------
@@ -208,23 +196,26 @@
   var onMarkerActivate = function(event, markerId) {
     // if this is the active marker, show it in detail view and nothing else
     if(activeMarker && activeMarker.options.couchId == markerId){
-      $.event.trigger("marker:show", markerId)
+      setState('detail')
+      onResize()
+      //$.event.trigger("marker:show", markerId)
       return;
     }
-    console.log("onMarkerActivate: ",markerId);
     hoodie.store.find('marker', markerId)
     .then( function(marker) {
       centerMapOnCoordinates(marker)
       activateMarker(marker.id);
-      addState('preview')
-      onResize()
+      if(state === 'map'){
+        setState('preview')
+      } else {
+        onResize();
+      }
     });
   };
 
   var onMarkerDeactivate = function(event, markerId) {
-    console.log("onMarkerDeactivate: ",markerId);
     deactivateActiveMarker()
-    removeState('preview')
+    setState('map')
   };
 
   // ------------------
@@ -253,15 +244,9 @@
   // Global events
   // -------------
 
-  var addState = function(newState) {
-    if(states.indexOf(newState) === -1){
-      states.push(newState)
-    }
-    onResize();
-  }
-
-  var removeState = function(oldState) {
-    states.splice(states.indexOf(oldState),1);
+  var setState = function(newState) {
+    if(state === newState) return;
+    state = newState;
     onResize();
   }
 
@@ -429,26 +414,6 @@
     if(!properities.lat || !properities.lng) return;
     var lat = properities.lat,
         lng = properities.lng
-    /*
-    if (! extraOffset ) extraOffset = {}
-    if (! extraOffset.x ) extraOffset.x = 0
-    if (! extraOffset.y ) extraOffset.y = 0
-    console.log('centerMapOnCoordinates', extraOffset)
-
-    // map might be out screen, but we want to center
-    // on visible part, so:
-    // 1. turn lat/lng into pixels
-    var point = map.project([lat, lng])
-    // 2. calculate offsets & update pixel point
-    var offsetLeft = $('.mapContainer').offset().left
-    var offsetBottom = $window.scrollTop()
-    point.x += offsetLeft / 2   + extraOffset.x / 2
-    point.y -= offsetBottom / 2 + extraOffset.y / 2
-
-    // 3. turn pixel point back to lat/lng
-    var latlng = map.unproject(point)
-    */
-    // \o/
     map.panTo(L.latLng(lat,lng));
   };
 

@@ -3,20 +3,24 @@
   left: 280px;
   right: 0;
   background: #FFF;
-
   z-index: 200;
   padding: 10px;
-  /*top: 100%;*/
-
-  transition: left .2s, top .2s;
+  display: none;
+  transition: left .2s;
 }
 
 #marker-detail.preview {
+  display: block;
   bottom: 0;
 }
 
 #marker-detail.preview .messages{
   display: none;
+}
+
+#marker-detail.detail {
+  display: block;
+  top: 40%;
 }
 
 #marker-detail:before {
@@ -29,9 +33,11 @@
   bottom: 100%;
   background: rgba(255,255,255,.5);
 }
+/*
 #marker-detail[data-mode="hide"] {
   display: none;
 }
+*/
 
 #marker-detail .close {
   position: absolute;
@@ -52,6 +58,10 @@
   margin: 0;
   padding: 0;
   margin: 0;
+}
+
+#marker-detail select.messageTemplates{
+  margin: 3px;
 }
 
 #marker-detail .messages {

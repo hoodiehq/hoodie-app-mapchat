@@ -41,9 +41,6 @@
     $document.on('marker:show', show)
     $document.on('marker:activate', show)
 
-    $document.on('markerlist:open', layoutPreview);
-    $document.on('markerlist:close', layoutPreview);
-
     hoodie.store.on('add:marker', handleNewMarker )
     hoodie.account.on('signout', hide )
   }
@@ -52,61 +49,41 @@
   //
   //
   function show(event, markerId) {
-    console.log("show: ",markerId);
-    if (isCurrentMarker(markerId)) {
-       detail(markerId)
-       return
-     }
+    if (isCurrentMarker(markerId) || $el.hasClass('detail')) {
+      detail(markerId)
+      return
+    }
 
-     if ( mode() === 'hide') {
-       setMode('show')
-       preview(markerId)
-       return
-     }
+    hoodie.store.find('marker', markerId)
+    .then( render )
+    .then( $el.removeClass('detail hide').addClass('preview') );
 
-     hoodie.store.find('marker', markerId)
-     .then( render )
-     .then( layoutPreview );
   }
 
   //
-  //
+  //  Scroll back up to reveal comment field
   //
   function showForm () {
-    var currentScrollTop = $window.scrollTop()
-    if (currentScrollTop < 200) {
-      $body.animate({scrollTop: 200}, 300)
-      $.event.trigger('map:center', [currentMarker, { y: currentScrollTop - 200 }])
-    }
+    $body.animate({scrollTop: 0}, 300)
   }
 
   //
-  //
+  //  Hide marker panel completely
   //
   function hide() {
-    $el.addClass('hide')
-    $leafletControls.hide()
+    $el.removeClass('detail preview').addClass('hide')
+    $.event.trigger('marker:deactivate', [currentMarker.id]);
+    currentMarker = null;
   }
 
   //
-  //
+  //  Show only the marker's header
   //
   function preview(markerId) {
     if (! markerId) markerId = currentMarker.id;
     hoodie.store.find('marker', markerId)
     .then( render )
-    .then( layoutPreview );
-
-    subscribeToScroll()
-  }
-
-  // Calculate preview header height and scroll accordingly
-  // because we need to accomodate various text lengths
-  //
-  function layoutPreview() {
-    var $markerDetail = $('#marker-detail article.marker > header');
-    var markerDetailHeaderHeight = $markerDetail.height() + 20;
-    $el.addClass('preview');
+    .then( $el.removeClass('detail hide').addClass('preview') );
   }
 
   //
@@ -115,34 +92,20 @@
   function detail(markerId) {
     if (! markerId) markerId = currentMarker.id;
 
-    // if already expanded, close it.
-    if ( $window.scrollTop() > 110 ) {
-      hide()
-      return
+    $el.removeClass('hide preview').addClass('detail')
+    if(!$el.hasClass('preview')){
+      // This is a different marker than the one who'se preview we've loaded,
+      // so load the new marker
+      hoodie.store.find('marker', markerId)
+      .then( render );
     }
-
-    var maxScroll = $window.height() - 110
-    var scrollTop = $window.scrollTop()
-    var diff = maxScroll - scrollTop
-    if ( scrollTop < maxScroll) {
-
-      hoodie.store.find('marker', markerId).then( function(marker) {
-        $.event.trigger('map:center', [marker, { y: diff / 2 }])
-      })
-
-      $body.animate({scrollTop: maxScroll}, 300)
-    }
-
-    hoodie.store.find('marker', markerId)
-    .then( render );
-
-    subscribeToScroll()
   }
 
   //
   //
   //
   function isCurrentMarker(marker) {
+    if(!currentMarker) return false
     return currentMarker.id === (marker.id || marker)
   }
 
@@ -150,22 +113,8 @@
   //
   //
   function isntCurrentMarker(marker) {
+    if(!currentMarker) return true
     return currentMarker.id !== (marker.id || marker)
-  }
-
-  //
-  //
-  //
-  function mode() {
-    return $el.data('mode')
-  }
-
-  //
-  //
-  //
-  function setMode(mode) {
-    $el.attr('data-mode', mode)
-    $el.data('mode', mode)
   }
 
   //
@@ -194,6 +143,7 @@
       var html = ich.show($.extend(marker, {Config: Config}));
       $el.html( html )
       translate()
+      $.event.trigger('map:resize');
     }.bind(this))
   }
 
@@ -206,22 +156,6 @@
     document.webL10n.translate($tree[0])
   }
 
-  //
-  //
-  //
-  function hide() {
-    console.log("hide: ",hide);
-    var scrollTop = $window.scrollTop()
-    $.event.trigger('map:center', [currentMarker, { y : -scrollTop}])
-    currentMarker = {}
-    unsubscribeFromScroll()
-    $.event.trigger('marker:deactivate')
-
-    $body.animate({scrollTop: 0}, 200, function() {
-      setMode('hide')
-    }.bind(this))
-  }
-
   // Triggered when this client adds a new marker
   //
   //
@@ -232,7 +166,6 @@
       return
     }
     if(marker.createdByName === hoodie.account.username){
-      setMode('show')
       showEditView(marker)
     }
   }
@@ -244,7 +177,6 @@
     if(!markerId){
       markerId = $(event.target).closest('[data-id]').data('id');
     }
-    setMode('show')
     hoodie.store.find('marker', markerId).then( function(marker) {
       showEditView(marker)
     })
@@ -252,10 +184,12 @@
 
   function showEditView(marker){
     currentMarker = marker;
+
     var html = ich.edit($.extend(marker, {Config: Config}));
-    $el.html( html )
+    $el.find('article > header h3').replaceWith(html)
+
     translate()
-    $body.animate({scrollTop: 9999}, 300)
+    $.event.trigger('map:resize');
     $('#marker-detail input:eq(0)').focus()
   }
 
@@ -291,7 +225,8 @@
     }
     hoodie.store.update('marker', currentMarker.id, {name: name})
     .then( render )
-    $body.animate({scrollTop: 9999}, 300)
+    //
+    //$body.animate({scrollTop: 9999}, 300)
   }
 
 
@@ -324,44 +259,6 @@
     hoodie.store.removeAll( _filterMessagesFor({id: id}))
     hoodie.store.remove( 'marker', id)
     currentMarker = {}
-  }
-
-
-  //
-  //
-  //
-  function subscribeToScroll() {
-    unsubscribeFromScroll()
-    $window.on('scroll', handleScroll)
-  }
-
-  //
-  //
-  //
-  function unsubscribeFromScroll() {
-    $window.unbind('scroll', handleScroll)
-    window.clearTimeout( _scrollEndTimeout )
-  }
-
-  //
-  //
-  //
-  var _scrollEndTimeout = null
-  function handleScroll(event) {
-    window.clearTimeout( _scrollEndTimeout )
-    _scrollEndTimeout = window.setTimeout( checkScrollPosition, 150 )
-  }
-
-  //
-  //
-  //
-  function checkScrollPosition () {
-    return;
-    var scrollTop = $window.scrollTop()
-
-    if (scrollTop < 80) {
-      $body.animate({scrollTop: 0}, 200, hide)
-    }
   }
 
   // private

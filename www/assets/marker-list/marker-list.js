@@ -33,6 +33,7 @@
     $el.on('input change', $search, handleSearch)
 
     $document.on('marker:activate', handleMarkerActivation)
+    $document.on('marker:deactivate', handleMarkerDeactivation)
     $document.on('app:resize', resize)
 
     hoodie.store.on('change clear', renderMarkers )
@@ -96,6 +97,14 @@
     var $items = $el.find('[data-id]')
     $items.removeClass('active');
     $items.filter('[data-id='+id+']').addClass('active');
+  }
+
+  //
+  //
+  //
+  function handleMarkerDeactivation(event, id) {
+    var $items = $el.find('[data-id]')
+    $items.removeClass('active');
   }
 
   //

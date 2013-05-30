@@ -181,11 +181,11 @@
             <form class="message">
               <textarea name="messageBody" required data-l10n-id="NewMessage"></textarea>
               <button class="btn btn-inverse">
-                <i class="icon-ok icon-white"></i> 
+                <i class="icon-ok icon-white"></i>
                 <span data-l10n-id="Send">Send</span>
               </button>
 
-              <select name="template">
+              <select name="template" class="messageTemplates">
                 <option data-l10n-id="Templates">Templates</option>
                 {{#Config.messageTemplates}}
                   <option data-l10n-id="{{.}}">{{.}}</option>
