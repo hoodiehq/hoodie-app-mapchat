@@ -34,8 +34,8 @@
     $el.on('click', '.marker h3 a', show)
     $el.on('click', '.marker header .comment a', show)
     $el.on('change', 'select[name=template]', setTemplate)
-    $el.on('submit', '.marker', save)
-    $el.on('submit', '.message', saveMessage)
+    $el.on('submit', 'form.marker', save)
+    $el.on('submit', 'form.message', saveMessage)
 
     //$document.on('marker:edit', edit)
     $document.on('marker:show', show)
@@ -50,6 +50,7 @@
   //
   //
   function show(event, markerId) {
+    console.log("show: ",markerId);
     event.preventDefault();
     if(!markerId){
       markerId = $(event.target).closest('[data-id]').data('id')
@@ -82,6 +83,7 @@
   //  Show only the marker's header
   //
   function preview(markerId) {
+    console.log("preview: ",markerId);
     if (! markerId) markerId = currentMarker.id;
     hoodie.store.find('marker', markerId)
     .then( render )
@@ -92,6 +94,7 @@
   //
   //
   function detail(markerId) {
+    console.log("detail: ",markerId);
     if (! markerId) markerId = currentMarker.id;
 
     $el.removeClass('hide preview').addClass('detail')
@@ -124,6 +127,7 @@
   //
   //
   function render(marker) {
+    console.log("render: ",marker);
     _addMessagesToMarker(marker)
     .then( function(marker) {
       if (marker && marker.type === 'marker') {
@@ -196,15 +200,12 @@
     $('#marker-detail input:eq(0)').focus()
   }
 
-  //  Checks if any new messages belong to the currently open marker and adds them
+  //  Checks if any new messages belong to the currently open marker and re-renders if so
   //
   //
   function handleNewMessage(message){
-    if(!currentMarker) return;
     if(message.parent === "marker/"+currentMarker.id){
-      var html = ich.message(message)
-      $('#marker-detail .messages .list').prepend(html);
-      // TODO: update message count in header while maintaining translation
+      render(currentMarker)
     }
   }
 
@@ -234,6 +235,7 @@
   //
   //
   function save(event) {
+    console.log("save: ",event);
     event.preventDefault()
     var name = $el.find('input[name=name]').val()
     if(!name){
@@ -241,8 +243,6 @@
     }
     hoodie.store.update('marker', currentMarker.id, {name: name})
     .then( render )
-    //
-    //$body.animate({scrollTop: 9999}, 300)
   }
 
 
