@@ -42,6 +42,7 @@
     $document.on('marker:activate', show)
 
     hoodie.store.on('add:marker', handleNewMarker )
+    hoodie.store.on('add:message', handleNewMessage )
     hoodie.account.on('signout', hide )
   }
 
@@ -195,6 +196,19 @@
     $('#marker-detail input:eq(0)').focus()
   }
 
+  //  Checks if any new messages belong to the currently open marker and adds them
+  //
+  //
+  function handleNewMessage(message){
+    if(!currentMarker) return;
+    if(message.parent === "marker/"+currentMarker.id){
+      var html = ich.message(message)
+      $('#marker-detail .messages .list').prepend(html);
+      // TODO: update message count in header while maintaining translation
+    }
+  }
+
+
   //
   //
   //
@@ -244,7 +258,6 @@
       parent : "marker/" + currentMarker.id
     }
     hoodie.store.add('message',  message)
-    .then( function() { render() }.bind(this) )
   }
 
   //
