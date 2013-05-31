@@ -69,16 +69,10 @@ Hoodie.extend('hoodstrap', (function() {
           })
           break
         case 'signin':
-          // reload to show new signin
-          window.hoodie.account.signOut().done(function(){
-            window.location.reload();
-          });
-          /*
           $form = $.modalForm({
             fields: [ 'username', 'password' ],
             submit: 'Sign in'
           })
-`          */
           break
         case 'resetpassword':
           $form = $.modalForm({
