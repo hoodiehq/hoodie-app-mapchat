@@ -60,6 +60,10 @@
   margin: 0;
 }
 
+#marker-detail header h3{
+  margin: 0 40px 0 0;
+}
+
 #marker-detail select.messageTemplates{
   margin: 3px;
 }

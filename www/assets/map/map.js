@@ -78,11 +78,12 @@
 
     $document.on('map:geolocate', geolocate)
     $document.on('map:center', function (event, marker, offset) {
-      console.log('map:center')
       centerMapOnCoordinates(marker, offset)
     })
     $document.on('map:resize', onResize)
-    $document.on('map:mobileList', setState('list'))
+    $document.on('map:mobileList', function(){
+      setState('list')
+    });
     $document.on('marker:activate', onMarkerActivate)
     $document.on('marker:deactivate', onMarkerDeactivate)
 
@@ -176,11 +177,7 @@
         targetHeight = $window.height() - markerDetailHeaderHeight;
       break;
       case 'list':
-        if($(window).width() <= 480){
-          targetHeight = '40%';
-        } else {
-          targetHeight = '100%';
-        }
+        targetHeight = '40%';
       break;
       case 'detail':
         targetHeight = '40%';

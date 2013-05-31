@@ -53,7 +53,6 @@
     } else {
       var ww = $(window).width()
       var wh = $(window).height()
-      console.log("resize: ",ww, wh);
       var headerHeight = $el.find('header').outerHeight(true);
       $el.find('.content').height(wh-headerHeight);
     }
