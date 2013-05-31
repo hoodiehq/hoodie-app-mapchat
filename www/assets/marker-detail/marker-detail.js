@@ -31,9 +31,9 @@
     $el.on('click', '.close', hide)
     $el.on('click', '.edit', edit)
     $el.on('click', '.destroy', destroy)
-    $el.on('click', '.expand', show)
+    $el.on('click', '.marker h3 a', show)
+    $el.on('click', '.marker header .comment a', show)
     $el.on('change', 'select[name=template]', setTemplate)
-    $el.on('focus', 'textarea', showForm)
     $el.on('submit', '.marker', save)
     $el.on('submit', '.message', saveMessage)
 
@@ -49,6 +49,11 @@
   //
   //
   function show(event, markerId) {
+    event.preventDefault();
+    if(!markerId){
+      markerId = $(event.target).closest('[data-id]').data('id')
+    }
+
     if (isCurrentMarker(markerId) || $el.hasClass('detail')) {
       detail(markerId)
       return
@@ -61,18 +66,14 @@
   }
 
   //
-  //  Scroll back up to reveal comment field
-  //
-  function showForm () {
-    $body.animate({scrollTop: 0}, 300)
-  }
-
-  //
   //  Hide marker panel completely
   //
   function hide() {
     $el.removeClass('detail preview').addClass('hide')
-    $.event.trigger('marker:deactivate', [currentMarker.id]);
+    if(currentMarker){
+      $.event.trigger('marker:deactivate', [currentMarker.id]);
+    }
+    $.event.trigger('map:setstate', ['map']);
     currentMarker = null;
   }
 
@@ -95,7 +96,7 @@
     $el.removeClass('hide preview').addClass('detail')
     if(!$el.hasClass('preview')){
       $.event.trigger('list:hide');
-      // This is a different marker than the one who'se preview we've loaded,
+      // This is a different marker than the one whose preview we've loaded,
       // so load the new marker
       hoodie.store.find('marker', markerId)
       .then( render );

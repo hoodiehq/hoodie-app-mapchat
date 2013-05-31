@@ -36,10 +36,10 @@
   -webkit-animation: rotating 1.3s linear infinite;
 }
 
-@media (max-width: 480px)
-{
+@media (max-width: 480px) {
+  #marker-detail.detail ~ .mapContainer #controls,
+  #marker-detail.detail ~ .mapContainer .leaflet-control-container,
   #markerList[data-mode="show"] ~ .mapContainer #controls,
-  #marker-detail[data-mode="show"] ~ .mapContainer #controls,
   #markerList[data-mode="show"] ~ .mapContainer .leaflet-control-container {
     display: none;
   }

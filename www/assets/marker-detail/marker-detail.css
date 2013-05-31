@@ -66,6 +66,7 @@
 
 #marker-detail select.messageTemplates{
   margin: 3px;
+  width: auto;
 }
 
 #marker-detail .messages {
@@ -81,6 +82,7 @@
   font-size: inherit;
   line-height: 1em;
   height: 1.6em;
+  width: auto;
 }
 
 #markerList[data-mode="show"] ~ #marker-detail {

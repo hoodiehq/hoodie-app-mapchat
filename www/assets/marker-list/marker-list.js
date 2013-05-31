@@ -11,8 +11,6 @@
     findElements()
     bindToEvents()
     renderMarkers()
-    show()
-    resize()
   }
   $document.on('app:ready', init)
 
@@ -49,7 +47,8 @@
   //
   function resize() {
     if($(window).width() <= 480 ){
-      $.event.trigger('map:mobileList');
+      // fired when onscreen keyboard appears, too. crap
+      //$.event.trigger('map:setstate', ['list']);
     } else {
       var ww = $(window).width()
       var wh = $(window).height()
@@ -86,7 +85,7 @@
   }
 
   //
-  //
+  //  Show and hide marker list on small screens
   //
   function handleToggleMarkerListClick(event) {
     if($(window).width() > 480) return;
@@ -99,7 +98,6 @@
   //
   //
   function handleMarkerActivation(event, id) {
-    console.log("handleMarkerActivation: ",id);
     var $items = $el.find('[data-id]')
     $items.removeClass('active');
     $items.filter('[data-id='+id+']').addClass('active');
@@ -176,7 +174,7 @@
   function show() {
     $el.attr('data-mode', 'show')
     $el.data('mode', 'show')
-
+    $.event.trigger('map:setstate', ['list']);
   }
 
   //
@@ -185,6 +183,12 @@
   function hide() {
     $el.attr('data-mode', 'hide')
     $el.data('mode', 'hide')
+    var newState = 'map';
+    // detect whether there's a preview or detail view under the list
+    // and resize the map accordingly
+    if($('#marker-detail.preview').length > 0) newState = 'preview'
+    if($('#marker-detail.detail').length > 0) newState = 'detail'
+    $.event.trigger('map:setstate', [newState]);
   }
 
   //

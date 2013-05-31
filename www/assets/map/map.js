@@ -81,8 +81,8 @@
       centerMapOnCoordinates(marker, offset)
     })
     $document.on('map:resize', onResize)
-    $document.on('map:mobileList', function(){
-      setState('list')
+    $document.on('map:setstate', function(event, newState){
+      setState(newState)
     });
     $document.on('marker:activate', onMarkerActivate)
     $document.on('marker:deactivate', onMarkerDeactivate)
@@ -166,6 +166,7 @@
   };
 
   var onResize = function() {
+    console.log("onResize: ",state);
     switch(state){
       default:
       case 'map':
@@ -220,7 +221,6 @@
 
   var onMarkerDeactivate = function(event, markerId) {
     deactivateActiveMarker()
-    setState('map')
   };
 
   // ------------------
@@ -250,6 +250,7 @@
   // -------------
 
   var setState = function(newState) {
+    console.log("setState: ",newState);
     if(state === newState) return;
     state = newState;
     onResize();
@@ -371,6 +372,7 @@
   // Fetches all messages in the store and distributes them in the UI
   var getAllMessages = function() {
     hoodie.store.findAll('message').done(function(messages){
+      console.log("messages: ",messages);
       messages.forEach(function(message, index){
         var type = message.parent.substring(0,message.parent.indexOf('/'))
         var parentId = message.parent.substr(message.parent.indexOf('/')+1);

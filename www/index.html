@@ -163,12 +163,12 @@
       <article data-id="{{id}}" class="marker">
         <header>
           <h3>
-            <span>{{name}}</span>
+            <a href=""><span>{{name}}</span></a>
           </h3>
           <p>
             <span class="owner"><i class="icon-user"></i> {{createdByName}}</span>
             | <span class="date"><i class="icon-time"></i> {{ createdTimeAgo }}</span>
-            | <span class="comment"><i class="icon-comment"></i> <span data-l10n-id="Messages" data-l10n-args='{ "n":{{options.messages.length}} }'>{{n}} Messages</span>.</span>
+            | <span class="comment"><i class="icon-comment"></i> <a href=""><span data-l10n-id="Messages" data-l10n-args='{ "n":{{options.messages.length}} }'>{{n}} Messages</span></a></span>
             {{#belongsToMe}}
             | <a href="#" class="edit"><i class="icon-pencil"></i> <span data-l10n-id="edit">edit</span></a>
             | <a href="#" class="destroy"><i class="icon-trash"></i> <span data-l10n-id="delete">delete</span></a>

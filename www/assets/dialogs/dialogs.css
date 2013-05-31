@@ -61,12 +61,8 @@
   height: 52px;
 }
 
-@media (max-width: 480px)
-{
+@media (max-width: 480px){
   #dialog .content {
     padding: 20px;
-  }
-  #dialog .content input {
-    width: 260px;
   }
 }
