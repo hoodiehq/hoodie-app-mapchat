@@ -50,7 +50,7 @@
   //
   //
   function render() {
-    $toggle.show()
+    // $toggle.show()
   }
 
 
