@@ -1,18 +1,21 @@
 {
   "name": "hoodie-mapchat",
-  "version": "1.0.0-1",
+  "version": "1.0.1",
   "type": "app",
+  "hoodie": {
+    "plugins": [
+      "hoodie-plugin-appconfig",
+      "hoodie-plugin-email",
+      "hoodie-plugin-users"
+    ]
+  },
   "dependencies": {
-    "hoodie-app": "git://github.com/hoodiehq/hoodie-app.git",
-    "hoodie-worker-users": "git://github.com/hoodiehq/worker-users.git",
-    "hoodie-worker-users-sync": "git://github.com/gr2m/hoodie-worker-users-sync.git"
+    "hoodie-server": "~0.9.6",
+    "hoodie-plugin-appconfig": "~0.1.1",
+    "hoodie-plugin-email": "~0.1.4",
+    "hoodie-plugin-users": "~0.0.11"
   },
   "scripts": {
-    "start": "node node_modules/hoodie-app/bin/start"
-  },
-  "subdomain": "hoodie-mapchat",
-  "domains": ["admin.hoodie-mapchat.jit.su"],
-  "engines": {
-    "node": "0.8.x"
+    "start": "node node_modules/hoodie-server/bin/start"
   }
 }
