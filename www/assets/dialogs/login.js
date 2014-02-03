@@ -102,7 +102,7 @@
   //
   //
   function onSignInError(error) {
-    $alert.text(error.error+": "+error.reason).show();
+    $alert.text(error.message).show();
     $password.val('')
   }
 

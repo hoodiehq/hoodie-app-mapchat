@@ -64,9 +64,9 @@
 
   // Get notified by Hoodie when remote data changes
   var registerHoodieEvents = function() {
-    hoodie.store.on('add:marker', onMarkerFromStore )
-    hoodie.store.on('add:message', onMessageFromStore )
-    hoodie.store.on('remove:marker', onRemoveMarkerFromStore )
+    hoodie.store.on('marker:add', onMarkerFromStore )
+    hoodie.store.on('message:add', onMessageFromStore )
+    hoodie.store.on('marker:remove', onRemoveMarkerFromStore )
     hoodie.store.on('clear', onRemoveAllMarkers )
   }
 
@@ -452,9 +452,9 @@
     .on('click', triggerMarkerActivation);
   };
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function handleBookmarkOpen(event, latlng, zoom) {
     map.setView(latlng, zoom)
   }

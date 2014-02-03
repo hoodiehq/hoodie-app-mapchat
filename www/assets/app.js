@@ -1,7 +1,7 @@
 // Set correct Hoodie API endpoint depending on where the app is running
 var HOODIE_API_URL;
 if (! /(localhost|\.dev)$/.test(location.hostname)) {
-  // when running localy, use standard andpoint (defaults to /_api)
+  // when running localy, use standard andpoint (defaults to current host)
   HOODIE_API_URL = Config.hoodieUrl;
 }
 
@@ -29,7 +29,7 @@ bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }
     // localization
     document.documentElement.lang = document.webL10n.getLanguage();
     document.documentElement.dir = document.webL10n.getDirection();
-    
+
 
     var throttledResize = _.throttle(sendResizeEvent, 300);
     $window.on('resize', function(event){
@@ -60,9 +60,9 @@ bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; }
   }
 
 
-  // 
-  // 
-  // 
+  //
+  //
+  //
   function sendResizeEvent() {
     $.event.trigger('app:resize')
   }

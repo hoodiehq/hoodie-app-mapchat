@@ -41,8 +41,8 @@
     $document.on('marker:show', show)
     $document.on('marker:activate', show)
 
-    hoodie.store.on('add:marker', handleNewMarker )
-    hoodie.store.on('add:message', handleNewMessage )
+    hoodie.store.on('marker:add', handleNewMarker )
+    hoodie.store.on('message:add', handleNewMessage )
     hoodie.account.on('signout', hide )
   }
 
@@ -145,7 +145,7 @@
       marker.createdTimeAgo = $.timeago(marker.createdAt)
 
       // is it mine?
-      marker.belongsToMe = marker.createdBy === hoodie.account.ownerHash
+      marker.belongsToMe = marker.createdBy === hoodie.id()
 
       var html = ich.show($.extend(marker, {Config: Config}));
       $el.html( html )

@@ -1,6 +1,6 @@
 var Config = {
   appName : 'Hoodie MapChat',
-  hoodieUrl : 'http://hoodie-mapchat.jit.su/_api',
+  hoodieUrl : undefined, // undefined defaults to current host
 
   messageTemplates : [
     // see local/data.in
