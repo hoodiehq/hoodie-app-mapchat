@@ -6,7 +6,6 @@
     "bootstrap.modalform": "~1.0",
     "leaflet": "~0.5",
     "leaflet.label": "git://github.com/Leaflet/Leaflet.label.git",
-    "hoodie": "*",
     "underscore": "~1.4",
     "icanhaz": "~0.10"
   }
