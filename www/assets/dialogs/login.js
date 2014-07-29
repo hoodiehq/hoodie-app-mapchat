@@ -48,6 +48,7 @@
   //
   function bindToEvents() {
     $el.on('submit', 'form', handleSubmit)
+    $el.on('click', 'button[name=signUp]', handleSignUpSubmit)
     hoodie.account.on('signout', show)
   }
 
@@ -87,6 +88,18 @@
     var password = $password.val();
 
     hoodie.account.signIn(username, password)
+    .then(onSignInSucces).fail(onSignInError)
+  }
+  //
+  //
+  //
+  function handleSignUpSubmit(event) {
+    event.preventDefault()
+
+    var username = $username.val();
+    var password = $password.val();
+
+    hoodie.account.signUp(username, password)
     .then(onSignInSucces).fail(onSignInError)
   }
 
