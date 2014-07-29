@@ -5,6 +5,15 @@ An open source, offline capable, map based demo app.
 
 ![Screenshot](https://raw.github.com/hoodiehq/example-mapchat/master/screenshot.png)
 
+Local Setup
+-----------
+
+```
+# replace myappname with whatever you prefer.
+hoodie new myappname -t hoodiehq/hoodie-app-mapchat
+cd myappname
+hoodie start
+```
 
 Implementation / Dependencies
 -----------------------------
