@@ -1,0 +1,6 @@
+{
+  "couch_httpd_auth_secret": "a6a8a5f9f7215146cdde462a83f1bb79",
+  "admins": {
+    "admin": "-pbkdf2-185ee61c9ba8fd6dc6ac4c4965ff9b2f56d6f658,1fc11919413710f1611ed1b219313d13911d15d1361fe172,10"
+  }
+}
