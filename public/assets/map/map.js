@@ -54,12 +54,12 @@
     // Set up the Leaflet map
     $map = $('#map');
 
-    // Start in Berlin
-    map = L.map('map').setView([52.500274,13.419693], 14);
+    // Start in Los Angeles
+    map = L.map('map').setView([34.0522222,-118.2427778], 10);
     map.zoomControl.setPosition('bottomright');
 
     // Load tiles from OpenStreetMap
-    tileLayer = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    tileLayer = L.tileLayer('http://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png').addTo(map);
   }
 
   // Get notified by Hoodie when remote data changes
