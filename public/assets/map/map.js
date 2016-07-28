@@ -315,7 +315,7 @@
 
   // Find and display all messages belonging to a specific marker
   var showAllMessagesOfParent = function(type, parentId) {
-    hoodie.store.findAll('message').done(function(messages){
+    hoodie.store.findAll('message').then(function(messages){
       // find all messages belonging to this marker
       var relevantMessages = _.filter(messages, function(message){
         return message.parent == type+"/"+parentId;
@@ -372,7 +372,7 @@
 
   // Fetches all messages in the store and distributes them in the UI
   var getAllMessages = function() {
-    hoodie.store.findAll('message').done(function(messages){
+    hoodie.store.findAll('message').then(function(messages){
       console.log("messages: ",messages);
       messages.forEach(function(message, index){
         var type = message.parent.substring(0,message.parent.indexOf('/'))
