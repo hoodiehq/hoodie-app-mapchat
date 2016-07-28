@@ -41,8 +41,14 @@
     $document.on('marker:show', show)
     $document.on('marker:activate', show)
 
-    hoodie.store.on('marker:add', handleNewMarker )
-    hoodie.store.on('message:add', handleNewMessage )
+    hoodie.store.on('add', function (object) {
+      if (object.type === 'marker') {
+        return handleNewMarker(handleNewMarker)
+      }
+      if (object.type === 'message') {
+        handleNewMessage(handleNewMarker)
+      }
+    })
     hoodie.account.on('signout', hide )
   }
 
@@ -61,7 +67,7 @@
       return
     }
 
-    hoodie.store.find('marker', markerId)
+    hoodie.store('marker').find(markerId)
     .then( render )
     .then( $el.removeClass('detail hide').addClass('preview') );
 
@@ -85,7 +91,7 @@
   function preview(markerId) {
     console.log("preview: ",markerId);
     if (! markerId) markerId = currentMarker.id;
-    hoodie.store.find('marker', markerId)
+    hoodie.store('marker').find(markerId)
     .then( render )
     .then( $el.removeClass('detail hide').addClass('preview') );
   }
@@ -102,7 +108,7 @@
       $.event.trigger('list:hide');
       // This is a different marker than the one whose preview we've loaded,
       // so load the new marker
-      hoodie.store.find('marker', markerId)
+      hoodie.store('marker').find(markerId)
       .then( render );
     }
   }
@@ -145,7 +151,7 @@
       marker.createdTimeAgo = $.timeago(marker.createdAt)
 
       // is it mine?
-      marker.belongsToMe = marker.createdBy === hoodie.id()
+      marker.belongsToMe = marker.createdBy === hoodie.account.id
 
       var html = ich.show($.extend(marker, {Config: Config}));
       $el.html( html )
@@ -168,10 +174,11 @@
   //
   function handleNewMarker(marker, options){
 
-    // ignore remote marker
-    if (options.remote) {
-      return
-    }
+    // TODO: ignore remote marker
+    // new hoodie no longer supports options.remote
+    // if (options.remote) {
+    //   return
+    // }
     if(marker.createdByName === hoodie.account.username){
       showEditView(marker)
     }
@@ -184,7 +191,7 @@
     if(!markerId){
       markerId = $(event.target).closest('[data-id]').data('id');
     }
-    hoodie.store.find('marker', markerId).then( function(marker) {
+    hoodie.store('marker').find(markerId).then( function(marker) {
       showEditView(marker)
     })
   }
@@ -241,7 +248,7 @@
     if(!name){
       name = $el.find('header h3 span').text()
     }
-    hoodie.store.update('marker', currentMarker.id, {name: name})
+    hoodie.store('marker').update(currentMarker.id, {name: name})
     .then( render )
   }
 
@@ -257,7 +264,7 @@
       createdByName: hoodie.account.username,
       parent : "marker/" + currentMarker.id
     }
-    hoodie.store.add('message',  message)
+    hoodie.store('message').add(message)
   }
 
   //
@@ -272,7 +279,7 @@
 
     var id = currentMarker.id
     hoodie.store.removeAll( _filterMessagesFor({id: id}))
-    hoodie.store.remove( 'marker', id)
+    hoodie.store('marker').remove(id)
     currentMarker = {}
   }
 

@@ -25,7 +25,7 @@
     }
 
     // pre-populate map with markers
-    hoodie.store.findAll('marker')
+    hoodie.store('marker').findAll()
     .then( addAllMarkersFromStoreToMap )
   };
   $document.on('app:ready', init)
@@ -64,9 +64,17 @@
 
   // Get notified by Hoodie when remote data changes
   var registerHoodieEvents = function() {
-    hoodie.store.on('marker:add', onMarkerFromStore )
-    hoodie.store.on('message:add', onMessageFromStore )
-    hoodie.store.on('marker:remove', onRemoveMarkerFromStore )
+    hoodie.store.on('change', function (eventName, object) {
+      if (eventName === 'add' && object.type === 'marker') {
+        return onMarkerFromStore(object)
+      }
+      if (eventName === 'add' && object.type === 'message') {
+        return onMessageFromStore(object)
+      }
+      if (eventName === 'remove' && object.type === 'marker') {
+        return onRemoveMarkerFromStore(object)
+      }
+    })
     hoodie.store.on('clear', onRemoveAllMarkers )
   }
 
@@ -74,7 +82,11 @@
   var registerInterfaceEvents = function() {
 
     // Add new markers via touch hold
-    $map.hammer().on('hold', onMapHold);
+    // $map.hammer().on('hold', onMapHold);
+    $map.on('contextmenu', function (event) {
+      event.preventDefault()
+      addMarker(convertHammerEventToLeafletEvent(event, map));
+    })
 
     $document.on('map:geolocate', geolocate)
     $document.on('map:center', function (event, marker, offset) {
@@ -113,10 +125,11 @@
   var onMarkerFromStore = function(properties, options) {
     addMarkerToMap(properties);
 
-    // don't highlight markers that came from remote
-    if(options.remote === true){
-      return
-    }
+    // TODO: don't highlight markers that came from remote
+    // new hoodie no longer supports options.remote
+    // if(options.remote === true){
+    //   return
+    // }
 
     activateMarker(properties.id);
     centerMapOnCoordinates(properties);
@@ -208,7 +221,7 @@
       //$.event.trigger("marker:show", markerId)
       return;
     }
-    hoodie.store.find('marker', markerId)
+    hoodie.store('marker').find(markerId)
     .then( function(marker) {
       centerMapOnCoordinates(marker)
       activateMarker(marker.id);
@@ -294,19 +307,19 @@
   // Adds a new marker to the store
   var addMarker = function(event) {
     var markerData = {
-      'name': t('NewMarker'),
-      'lat': event.latlng.lat,
-      'lng': event.latlng.lng,
-      'createdByName': hoodie.account.username
+      name: t('NewMarker'),
+      lat: event.latlng.lat,
+      lng: event.latlng.lng,
+      createdByName: hoodie.account.username
     };
-    hoodie.store.add('marker', markerData)
+    hoodie.store('marker').add(markerData)
   };
 
   var updateMarker = function(event) {
     var $marker = $(event.target).closest('[data-id]')
     var update = {}
     update[event.target.name] = event.target.value
-    hoodie.store.update('marker', $marker.data('id'), update)
+    hoodie.store('marker').update($marker.data('id'), update)
   };
 
   // --------
@@ -315,7 +328,7 @@
 
   // Find and display all messages belonging to a specific marker
   var showAllMessagesOfParent = function(type, parentId) {
-    hoodie.store.findAll('message').then(function(messages){
+    hoodie.store('message').findAll().then(function(messages){
       // find all messages belonging to this marker
       var relevantMessages = _.filter(messages, function(message){
         return message.parent == type+"/"+parentId;
@@ -358,12 +371,12 @@
 
 
   var removeMessagesOfMarker = function(markerId) {
-    hoodie.store.findAll('message').done(function(messages){
+    hoodie.store('message').findAll().done(function(messages){
       messages.forEach(function(message, index){
         if(message.parent.indexOf('marker/') != -1){
           var id = message.parent.substr(message.parent.indexOf('/')+1);
           if(id === markerId){
-            hoodie.store.remove('message', message.id)
+            hoodie.store('message').remove(message.id)
           }
         }
       })
@@ -372,7 +385,7 @@
 
   // Fetches all messages in the store and distributes them in the UI
   var getAllMessages = function() {
-    hoodie.store.findAll('message').then(function(messages){
+    hoodie.store('message').findAll().then(function(messages){
       console.log("messages: ",messages);
       messages.forEach(function(message, index){
         var type = message.parent.substring(0,message.parent.indexOf('/'))
@@ -484,8 +497,6 @@
   // Leaflet doesn't understand Hammer event coordinates,
   // so here's a really simple fix
   var convertHammerEventToLeafletEvent = function(event, map){
-    event.pageX = event.gesture.touches[0].pageX;
-    event.pageY = event.gesture.touches[0].pageY;
     var translatedEvent = map.mouseEventToLatLng(event);
     translatedEvent.latlng = {};
     translatedEvent.latlng.lat = translatedEvent.lat;
