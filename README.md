@@ -9,18 +9,20 @@ Local Setup
 -----------
 
 ```
-# replace myappname with whatever you prefer.
-hoodie new myappname -t hoodiehq/hoodie-app-mapchat
-cd myappname
-hoodie start
+git clone https://github.com/hoodiehq/hoodie-app-mapchat.git
+cd hoodie-app-mapchat
+npm install --production
+npm start
 ```
+
+Note that there are a few [known issues](https://github.com/hoodiehq/hoodie-app-mapchat/issues/15).
 
 Implementation / Dependencies
 -----------------------------
 
-Hoodie MapChat is implementet with static HTML, JavaScript and CSS,
-optimized for a low learning courve. There is no build process or
-pre compilation necessery to use it. The following libraries are used:
+Hoodie MapChat is implemented with static HTML, JavaScript and CSS,
+optimized for a low learning curve. There is no build process or
+pre compilation necessary to use it. The following libraries are used:
 
 1. [jQuery](http://jquery.com)
 2. [ICanHaz](http://icanhazjs.com/) – Simple & powerful client-side templating
