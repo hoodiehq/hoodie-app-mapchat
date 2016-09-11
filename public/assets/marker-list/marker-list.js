@@ -39,7 +39,8 @@
     $document.on('app:resize', resize)
     $document.on('list:hide', hide)
 
-    hoodie.store.on('change clear', renderMarkers )
+    hoodie.store.on('change', renderMarkers )
+    hoodie.store.on('clear', renderMarkers )
     hoodie.account.on('signout', hide )
 
     $('.toggle-marker-list').on('click', handleToggleMarkerListClick);
@@ -129,16 +130,14 @@
   function addMessagesToMarkers( markers ) {
     var promises = markers.map( function( marker ){
       marker.options = {};
-      return hoodie.store.findAll( _filterMessagesFor(marker) ).then( function(messages) {
+      return hoodie.store(_filterMessagesFor(marker)).findAll().then( function(messages) {
         marker.options.messages = messages
         return marker;
       })
     }.bind(this));
 
     // resolve all promises, and turn array of arguments into one array
-    return $.when.apply($, promises).then( function() {
-      return Array.prototype.slice.apply(arguments)
-    });
+    return Promise.all(promises);
   }
 
   //
@@ -158,7 +157,7 @@
     var html;
     var data = {};
 
-    hoodie.store.findAll('marker')
+    hoodie.store('marker').findAll()
     .then( addMessagesToMarkers )
     .then( addTimeAgoToMarkers )
     .then( function(markers) {

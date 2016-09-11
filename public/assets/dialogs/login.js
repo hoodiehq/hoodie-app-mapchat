@@ -87,8 +87,8 @@
     var username = $username.val();
     var password = $password.val();
 
-    hoodie.account.signIn(username, password)
-    .then(onSignInSucces).fail(onSignInError)
+    hoodie.account.signIn({username: username, password: password})
+    .then(onSignInSucces).catch(onSignInError)
   }
   //
   //
@@ -99,8 +99,11 @@
     var username = $username.val();
     var password = $password.val();
 
-    hoodie.account.signUp(username, password)
-    .then(onSignInSucces).fail(onSignInError)
+    hoodie.account.signUp({username: username, password: password})
+    .then(function (){
+      return hoodie.account.signIn({username: username, password: password})
+    })
+    .then(onSignInSucces).catch(onSignInError)
   }
 
   //

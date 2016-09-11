@@ -5,8 +5,7 @@ if (! /(localhost|\.dev)$/.test(location.hostname)) {
   HOODIE_API_URL = Config.hoodieUrl;
 }
 
-// Init Hoodie and tell it where it's API is
-var hoodie = new Hoodie(HOODIE_API_URL)
+// Init Hoodie and tell it where its API is
 var t = document.webL10n.get;
 
 // getting rid of this one soon

@@ -5,7 +5,7 @@
   'use strict';
 
   // extend Hoodie with Hoodstrap module
-  Hoodie.extend(function(hoodie) {
+  hoodie.plugin(function(hoodie) {
 
     // Constructor
     function Hoodstrap(hoodie) {
@@ -21,7 +21,11 @@
       //
       hoodifyAccountBar: function() {
         this.subscribeToHoodieEvents();
-        this.hoodie.account.authenticate().then(this.handleUserAuthenticated.bind(this), this.handleUserUnauthenticated.bind(this));
+        if (hoodie.account.isSignedIn()) {
+          this.handleUserAuthenticated(this.hoodie.account.username)
+        } else {
+          this.handleUserUnauthenticated()
+        }
       },
 
       subscribeToHoodieEvents : function() {
