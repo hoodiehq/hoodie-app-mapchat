@@ -6,6 +6,6 @@
     "start": "hoodie"
   },
   "dependencies": {
-    "hoodie": "^27.1.1"
+    "hoodie": "^28.0.0"
   }
 }
