@@ -25,7 +25,9 @@
     }
 
     // pre-populate map with markers
-    hoodie.store('marker').findAll()
+    var markerStore = hoodie.store.withIdPrefix('marker/')
+
+    markerStore.findAll()
     .then( addAllMarkersFromStoreToMap )
   };
   $document.on('app:ready', init)
@@ -65,13 +67,15 @@
   // Get notified by Hoodie when remote data changes
   var registerHoodieEvents = function() {
     hoodie.store.on('change', function (eventName, object) {
-      if (eventName === 'add' && object.type === 'marker') {
+      var type = object._id.substring(0, object._id.indexOf('/'))
+
+      if (eventName === 'add' && type === 'marker') {
         return onMarkerFromStore(object)
       }
-      if (eventName === 'add' && object.type === 'message') {
+      if (eventName === 'add' && type === 'message') {
         return onMessageFromStore(object)
       }
-      if (eventName === 'remove' && object.type === 'marker') {
+      if (eventName === 'remove' && type === 'marker') {
         return onRemoveMarkerFromStore(object)
       }
     })
@@ -131,29 +135,31 @@
     //   return
     // }
 
-    activateMarker(properties.id);
+    activateMarker(properties._id);
     centerMapOnCoordinates(properties);
     // TODO: not sure if we still need this anywhere
-    $.event.trigger('marker:edit', properties.id)
+    $.event.trigger('marker:edit', properties._id)
     onResize();
   };
 
   // Displays the new message whereever it needs to be displayed
   var onMessageFromStore = function(message) {
-    var type = message.parent.substring(0, message.parent.indexOf('/'));
-    var id = message.parent.substr(message.parent.indexOf('/')+1);
-    var $currentMarker = $(".contentContainer [data-id='"+id+"']");
-    addMessageToMarkerLabel(id);
+    var $currentMarker = $(".contentContainer [data-id='" + message.parent + "']");
+
+    addMessageToMarkerLabel(message.parent);
+
     if($currentMarker.length === 0) return;
+
     var index = $('.contentContainer .messagesContainer li').length + 1;
     addMessageToMessagesContainerList(message, index);
+
     onResize();
   };
 
   // Updates views when a marker is removed from Hoodie
   var onRemoveMarkerFromStore = function(properties) {
-    map.removeLayer( markers[properties.id] );
-    if(activeMarker && activeMarker.options.couchId == properties.id){
+    map.removeLayer( markers[properties._id] );
+    if(activeMarker && activeMarker.options.couchId == properties._id){
       activeMarker = null;
     }
   };
@@ -221,10 +227,13 @@
       //$.event.trigger("marker:show", markerId)
       return;
     }
-    hoodie.store('marker').find(markerId)
+
+    var markerStore = hoodie.store.withIdPrefix('marker/')
+
+    markerStore.find(markerId)
     .then( function(marker) {
       centerMapOnCoordinates(marker)
-      activateMarker(marker.id);
+      activateMarker(marker._id);
       if(state === 'map'){
         setState('preview')
       } else {
@@ -306,49 +315,33 @@
 
   // Adds a new marker to the store
   var addMarker = function(event) {
-    var markerData = {
-      name: t('NewMarker'),
-      lat: event.latlng.lat,
-      lng: event.latlng.lng,
-      createdByName: hoodie.account.username
-    };
-    hoodie.store('marker').add(markerData)
+    hoodie.account.get('username').then(function (username) {
+      var markerData = {
+        name: t('NewMarker'),
+        lat: event.latlng.lat,
+        lng: event.latlng.lng,
+        createdByName: username
+      };
+
+      var markerStore = hoodie.store.withIdPrefix('marker/')
+
+      markerStore.add(markerData)
+    })
   };
 
   var updateMarker = function(event) {
     var $marker = $(event.target).closest('[data-id]')
     var update = {}
     update[event.target.name] = event.target.value
-    hoodie.store('marker').update($marker.data('id'), update)
+
+    var markerStore = hoodie.store.withIdPrefix('marker/')
+
+    markerStore.update($marker.data('id'), update)
   };
 
   // --------
   // Messages
   // --------
-
-  // Find and display all messages belonging to a specific marker
-  var showAllMessagesOfParent = function(type, parentId) {
-    hoodie.store('message').findAll().then(function(messages){
-      // find all messages belonging to this marker
-      var relevantMessages = _.filter(messages, function(message){
-        return message.parent == type+"/"+parentId;
-      });
-      // sort them ascending by date/time
-      relevantMessages = _.sortBy(relevantMessages, function(message){
-        return new Date(message.createdAt);
-      });
-      if(relevantMessages.length !== 0){
-        var $container = $('.contentContainer .messagesContainer');
-        $container.find('.hide').removeClass('hide');
-        $container.append('<ul></ul>');
-        var html;
-        relevantMessages.forEach( function( message, index ){
-          addMessageToMessagesContainerList(message, index+1);
-        });
-      }
-      onResize();
-    });
-  };
 
   // Displays a message in a marker's detail view
   var addMessageToMessagesContainerList = function(message, index) {
@@ -371,12 +364,14 @@
 
 
   var removeMessagesOfMarker = function(markerId) {
-    hoodie.store('message').findAll().done(function(messages){
+    var messageStore = hoodie.store.withIdPrefix('message/')
+
+    messageStore.findAll().then(function(messages){
       messages.forEach(function(message, index){
         if(message.parent.indexOf('marker/') != -1){
           var id = message.parent.substr(message.parent.indexOf('/')+1);
           if(id === markerId){
-            hoodie.store('message').remove(message.id)
+            messageStore.remove(message._id)
           }
         }
       })
@@ -385,14 +380,15 @@
 
   // Fetches all messages in the store and distributes them in the UI
   var getAllMessages = function() {
-    hoodie.store('message').findAll().then(function(messages){
+    var messageStore = hoodie.store.withIdPrefix('message/')
+
+    messageStore.findAll().then(function(messages){
       console.log("messages: ",messages);
       messages.forEach(function(message, index){
         var type = message.parent.substring(0,message.parent.indexOf('/'))
-        var parentId = message.parent.substr(message.parent.indexOf('/')+1);
         switch(type){
           case "marker":
-            addMessageToMarkerLabel(parentId);
+            addMessageToMarkerLabel(message.parent);
           break;
           default:
           break;
@@ -448,13 +444,13 @@
 
     var latlng = [properties.lat, properties.lng];
     var messages = 0;
-    if(markers[properties.id]){
-      messages = markers[properties.id].messages;
-      markers[properties.id] = null;
+    if(markers[properties._id]) {
+      messages = markers[properties._id].messages;
+      markers[properties._id] = null;
     }
-    markers[properties.id] = L.marker(latlng, {
+    markers[properties._id] = L.marker(latlng, {
       opacity: 0.8,
-      couchId: properties.id,
+      couchId: properties._id,
       icon: defaultMarkerIcon,
       messages: messages,
       fieldId: properties.fieldId
@@ -489,7 +485,7 @@
   // Turns a store object's createdAt attribute into a nice date string
   var addCreatedAtReadable = function(properties) {
     var weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunnday"];
-    var date = new Date(properties.createdAt);
+    var date = new Date(properties.hoodie.createdAt);
     var weekday = weekdays[date.getDay()];
     properties.createdAtReadable = weekday+", "+date.toFormat("DD.MM.YYYY - HH24:MM");
   };

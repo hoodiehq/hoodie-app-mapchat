@@ -113,7 +113,7 @@
   function handleMarkerActivation(event, id) {
     var $items = $el.find('[data-id]')
     $items.removeClass('active');
-    $items.filter('[data-id='+id+']').addClass('active');
+    $items.filter('[data-id="'+id+'"]').addClass('active');
   }
 
   //
@@ -128,9 +128,17 @@
   //
   //
   function addMessagesToMarkers( markers ) {
-    var promises = markers.map( function( marker ){
+    var messageStore = hoodie.store.withIdPrefix('message/')
+
+    var promises = markers.map( function(marker) {
       marker.options = {};
-      return hoodie.store(_filterMessagesFor(marker)).findAll().then( function(messages) {
+      return messageStore.findAll()
+
+      .then(function (messages) {
+        return messages.filter(function (message) { return message.parent == marker._id })
+      })
+
+      .then( function(messages) {
         marker.options.messages = messages
         return marker;
       })
@@ -145,7 +153,7 @@
   //
   function addTimeAgoToMarkers( markers ) {
     return markers.map( function( marker ){
-      marker.createdTimeAgo = $.timeago(marker.createdAt)
+      marker.createdTimeAgo = $.timeago(marker.hoodie.createdAt)
       return marker;
     }.bind(this));
   }
@@ -156,15 +164,19 @@
   function renderMarkers( markers) {
     var html;
     var data = {};
+    var markerStore = hoodie.store.withIdPrefix('marker/')
 
-    hoodie.store('marker').findAll()
+    markerStore.findAll()
     .then( addMessagesToMarkers )
     .then( addTimeAgoToMarkers )
     .then( function(markers) {
       if(markers.length !== 0){
+        markers = markers.map(function (marker) {
+          marker.id = marker._id
+          return marker
+        })
         data.data = {markers: markers};
       }
-
       html = ich.markerList($.extend(data, {Config: Config}));
       $content.html( html )
       translate( $content )
@@ -223,15 +235,6 @@
     var date = new Date(datetime);
     var weekday = weekdays[date.getDay()];
     return weekday+", "+date.toFormat("DD.MM.YYYY - HH24:MM");
-  }
-
-  //
-  //
-  //
-  function _filterMessagesFor(marker) {
-    return function(object) {
-      return object.type === 'message' && object.parent == "marker/" + marker.id
-    };
   }
 
 })(document, window, jQuery, hoodie, ich, Config);
