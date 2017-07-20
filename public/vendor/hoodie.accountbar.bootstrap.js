@@ -20,12 +20,18 @@
 
       //
       hoodifyAccountBar: function() {
+        var hoodstrap = this;
+
         this.subscribeToHoodieEvents();
-        if (hoodie.account.isSignedIn()) {
-          this.handleUserAuthenticated(this.hoodie.account.username)
-        } else {
-          this.handleUserUnauthenticated()
-        }
+        hoodie.account.get('session').then(function (session) {
+          if (session) {
+            hoodstrap.hoodie.account.get('username').then(function (username) {
+              hoodstrap.handleUserAuthenticated(username)
+            })
+          } else {
+            hoodstrap.handleUserUnauthenticated()
+          }
+        })
       },
 
       subscribeToHoodieEvents : function() {
@@ -45,7 +51,6 @@
         $('html').attr('data-hoodie-account-status', 'signedout');
       },
       handleUserAuthenticationError: function() {
-        debugger
         $('.hoodie-accountbar').find('.hoodie-username').text(this.hoodie.account.username);
         $('html').attr('data-hoodie-account-status', 'error');
       }
@@ -58,12 +63,15 @@
   * =============== */
 
   $(function () {
-
     // bind to click events
     $('body').on('click.hoodie.data-api', '[data-hoodie-action]', function(event) {
       var $element = $(event.target),
           action   = $element.data('hoodie-action'),
           $form;
+
+      if (!action) {
+        action = $element.closest('[data-hoodie-action]').data('hoodie-action')
+      }
 
       switch(action) {
         case 'signup':
@@ -113,36 +121,43 @@
 
     var handleSubmit = function(action) {
       return function(event, inputs) {
-
         var $modal = $(event.target);
         var magic;
 
         switch(action) {
           case 'signin':
-            magic = window.hoodie.account.signIn(inputs.username, inputs.password);
+            magic = window.hoodie.account.signIn({
+              username: inputs.username, password: inputs.password
+            });
             break;
           case 'signup':
-            magic = window.hoodie.account.signUp(inputs.username, inputs.password);
+            magic = window.hoodie.account.signUp({
+              username: inputs.username, password: inputs.password
+            }).then(function () {
+              return window.hoodie.account.signIn({
+                username: inputs.username, password: inputs.password
+              });
+            });
             break;
           case 'changepassword':
             magic = window.hoodie.account.changePassword(null, inputs.new_password);
             break;
           case 'changeusername':
-            magic = window.hoodie.account.changeUsername(inputs.current_password, inputs.new_username);
+            magic = window.hoodie.account.update({ username: inputs.new_username });
             break;
           case 'resetpassword':
-            magic = window.hoodie.account.resetPassword(inputs.email)
-            .done(function() {
-              window.alert('send new password to ' + inputs.email);
+            magic = window.hoodie.account.request({ type: 'passwordreset', contact: inputs.email })
+            .then(function(properties) {
+              window.alert('send new password to ' + properties.contact);
             });
             break;
         }
 
-        magic.done(function() {
+        magic.then(function() {
           $modal.find('.alert').remove();
           $modal.modal('hide');
         });
-        magic.fail(function(error) {
+        magic.catch(function(error) {
           $modal.find('.alert').remove();
           $modal.trigger('error', error);
         });

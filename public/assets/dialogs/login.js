@@ -126,9 +126,11 @@
   //
   //
   function showWhenSignedOut () {
-    if(! hoodie.account.username){
-      show();
-    }
+    hoodie.account.get('username').then(function (username) {
+      if(!username){
+        show();
+      }
+    })
   }
 
 })(document, window, jQuery, hoodie, ich, Config);
